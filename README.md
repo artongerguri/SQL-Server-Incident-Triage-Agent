@@ -1,67 +1,100 @@
 # SQL Server Incident Triage Agent
 
-AI agent demo project for the Kaggle AI Agents / Vibe Coding Capstone.
+An AI-assisted incident triage application for SQL Server DBAs and system
+engineers. The agent turns noisy SQL Server errors, job failures, replication
+messages, deadlock reports, and Query Store findings into a structured,
+safety-aware action plan.
 
-This project helps a DBA or System Engineer analyze SQL Server incidents such as:
+This project was built for the **Kaggle AI Agents: Intensive Vibe Coding
+Capstone Project**. It demonstrates a practical business use case for AI agents:
+reducing the time required to understand database incidents while keeping human
+DBA approval in the loop for operational actions.
 
-- failed backups
-- full transaction log
-- `log_reuse_wait_desc = ACTIVE_TRANSACTION`
-- replication subscription errors
-- Query Store / high CPU findings
-- disk space problems
-- SQL Agent job failures
+Recommended Kaggle track: **Agents for Business**.
+
+## What It Does
+
+The app accepts an incident message or one of the included sample incidents and
+returns:
+
+- incident category
+- severity
+- likely cause
+- verification steps
+- recommended DBA actions
+- read-only SQL checks
+- privacy review
+- optional Google ADK multi-agent analysis
+- optional local memory search using redacted incident history
+
+Supported incident patterns include:
+
+- failed backups caused by disk space problems
+- full transaction logs and `ACTIVE_TRANSACTION`
+- SQL Agent or maintenance plan failures
+- replication subscription issues
+- Query Store / high CPU investigations
 - SQL Server deadlocks
+- general fallback guidance for unknown SQL Server incidents
 
-The app gives a structured incident report:
+## Why This Matters
 
-1. incident category
-2. severity
-3. likely cause
-4. verification steps
-5. recommended fix steps
-6. safe SQL checks
-7. optional Google ADK multi-agent analysis
+SQL Server production incidents are often handled under pressure. A DBA may need
+to read long logs, classify severity, identify the safest verification steps,
+and avoid risky fixes such as shrinking files, killing sessions, or changing
+replication configuration too early.
 
-## Why this project is useful
+This agent is designed to help with the first triage phase:
 
-SQL Server incidents can cause downtime, failed backups, replication delays, and service disruption. This agent helps reduce triage time by converting messy logs and error messages into a clear action plan.
+- make incident response more consistent
+- reduce time spent reading noisy logs
+- separate observed facts from likely causes
+- surface safe read-only checks
+- require human review before operational action
 
-This project is intended for demo and educational use. Do not connect it to a production database without review and security controls.
+The project is intended for demo and educational use. Do not connect it to a
+production database without a security review and least-privilege credentials.
 
-## Project track
+## Key Features
 
-Recommended Kaggle track: **Business Track**
-
-Reason: database incidents directly affect uptime, cost, service reliability, and operational risk.
-
-## Tech stack
-
-- Python
-- Streamlit
-- Rule-based triage engine
-- Google Agent Development Kit (ADK)
-- Model Context Protocol (MCP) server
-- Optional Gemini model access
-- SQLite incident memory with redacted data only
-- Optional allowlisted SQL Server diagnostics through `pyodbc`
-- Sample incident files
-- README and Kaggle writeup template
+- **Local deterministic triage first**: the rule engine works without network
+  access or an API key.
+- **Google ADK workflow**: optional triage, safety-review, and coordination
+  agents.
+- **FastMCP server**: exposes read-only incident analysis, diagnostics listing,
+  and memory search tools.
+- **Privacy guardrails**: redacts sensitive-looking values before any optional
+  external AI call.
+- **Human-in-the-loop controls**: SQL checks are suggested for review, not
+  executed by the UI.
+- **Redacted local memory**: SQLite stores only redacted previews,
+  classifications, and matched rule names.
+- **Optional live SQL diagnostics**: disabled by default and restricted to named
+  allowlisted read-only operations.
+- **Tests included**: rules, redaction, memory, MCP integration, ADK workflow
+  structure, and SQL allowlist behavior.
 
 ## Architecture
 
-Static diagram asset: `assets/architecture.svg`
+Static architecture asset: `assets/architecture.svg`
 
-1. The local rule engine produces a deterministic result without network access.
-2. The privacy guard removes configured sensitive values and limits input size.
-3. After explicit user approval, an ADK `Workflow` runs the triage,
-   safety-review, and coordination agents.
-4. The triage agent uses the local FastMCP server for read-only tools.
-5. Optional SQLite memory stores only redacted previews and classifications.
+The design is local-first and safety-first:
+
+1. The Streamlit app receives the incident text.
+2. The privacy guard redacts configured sensitive values and limits input size.
+3. The local rule engine creates a deterministic triage result.
+4. If the user explicitly approves external AI sharing, the Google ADK workflow
+   runs three agents:
+   - `sql_triage_specialist`
+   - `safety_reviewer`
+   - `incident_coordinator`
+5. The triage agent uses a local FastMCP server with read-only tools.
+6. The UI displays the final report and records which SQL checks a DBA reviewed.
 
 The ADK agent cannot execute the live SQL diagnostic tool. External MCP clients
-can access it only when live access is explicitly enabled. The server accepts a
-named allowlisted operation, never arbitrary SQL.
+can access live diagnostics only when explicitly enabled through environment
+configuration. The server accepts named allowlisted operations only, never
+arbitrary SQL.
 
 ```mermaid
 flowchart LR
@@ -81,19 +114,65 @@ flowchart LR
     UI --> MEM[(SQLite Redacted Memory)]
 ```
 
-## Capstone concepts demonstrated
+## Capstone Concepts Demonstrated
 
-| Course concept | Where demonstrated |
+| Course concept | Implementation |
 | --- | --- |
 | Agent / multi-agent system with ADK | `src/adk_workflow.py` |
 | MCP server | `src/mcp_server.py` |
 | Security features | `src/security.py`, Streamlit opt-in controls, SQL allowlist |
-| Agent skills / tool use | ADK triage agent calling MCP tools |
-| Deployability | Public GitHub setup instructions in this README |
+| Agent tool use | ADK triage agent calling MCP tools |
+| Deployability | Public GitHub repository with setup instructions |
+
+## Tech Stack
+
+- Python
+- Streamlit
+- Google Agent Development Kit (ADK)
+- Gemini model access through ADK
+- FastMCP / Model Context Protocol
+- SQLite
+- pyodbc for optional SQL Server diagnostics
+- pytest
+
+## Project Structure
+
+```text
+sql-server-incident-triage-agent/
+|-- app.py
+|-- assets/
+|   |-- architecture.svg
+|   `-- cover.svg
+|-- docs/
+|   |-- ARCHITECTURE.md
+|   |-- DEMO_VIDEO_SCRIPT.md
+|   |-- KAGGLE_WRITEUP_TEMPLATE.md
+|   `-- SUBMISSION_CHECKLIST.md
+|-- prompts/
+|-- sample_incidents/
+|   |-- active_transaction_log_full.txt
+|   |-- backup_failed_disk_full.txt
+|   |-- deadlock_detected.txt
+|   |-- query_store_high_cpu.txt
+|   `-- replication_subscription_failed.txt
+|-- src/
+|   |-- adk_workflow.py
+|   |-- agent.py
+|   |-- mcp_server.py
+|   |-- memory.py
+|   |-- report.py
+|   |-- rules.py
+|   |-- security.py
+|   `-- sqlserver_tools.py
+|-- tests/
+|-- .env.example
+|-- requirements.txt
+`-- README.md
+```
 
 ## Setup
 
-### 1. Create virtual environment
+### 1. Create a virtual environment
 
 Windows PowerShell:
 
@@ -117,34 +196,55 @@ pip install -r requirements.txt
 
 ### 3. Optional: configure ADK / Gemini
 
-Copy `.env.example` to `.env`:
+Copy `.env.example` to `.env`.
 
-```bash
+Windows PowerShell:
+
+```powershell
 copy .env.example .env
 ```
 
-Add your API key locally:
+Linux/macOS:
+
+```bash
+cp .env.example .env
+```
+
+Then configure your local environment values:
 
 ```env
 GOOGLE_API_KEY=
 GEMINI_MODEL=gemini-2.5-flash
+INCIDENT_MEMORY_PATH=data/incidents.db
+SQLSERVER_MCP_ENABLE_LIVE=false
+SQLSERVER_CONNECTION_STRING=
+SQLSERVER_QUERY_TIMEOUT_SECONDS=10
 ```
 
-If no API key is provided, the project still works using the local rule-based triage engine.
+If `GOOGLE_API_KEY` is not configured, the project still works using the local
+rule-based triage engine.
 
-Even with an API key, the app does not send incident text until the user enables
-the approval checkbox. Only redacted, length-limited text is sent.
-
-### 4. Run the app
+## Run The App
 
 ```bash
 streamlit run app.py
 ```
 
-### 5. Run the MCP server directly
+Typical workflow:
 
-The ADK workflow starts this stdio server automatically. MCP clients can also
-start it with:
+1. Paste an incident message or load a sample incident.
+2. Choose whether to use the ADK workflow.
+3. Optionally approve sharing redacted text with Gemini.
+4. Optionally store the redacted incident in local memory.
+5. Click **Analyze Incident**.
+6. Review severity, category, likely cause, verification steps, privacy findings,
+   ADK analysis, and SQL checks.
+7. Record DBA approval for reviewed SQL checks.
+
+## Run The MCP Server
+
+The ADK workflow starts the MCP stdio server automatically. You can also run it
+directly:
 
 ```bash
 python -m src.mcp_server
@@ -157,99 +257,81 @@ Available tools:
 - `run_sql_diagnostic`
 - `search_incident_memory`
 
-Live SQL access is disabled by default. If it is enabled, use a dedicated SQL
-login with only the documented read permissions and configure the connection in
-`.env`. Do not place credentials in source code.
+Live SQL diagnostics are disabled by default. If enabled, use a dedicated
+least-privilege SQL Server login and never commit connection strings or
+passwords.
 
-### 6. Run tests
+## Run Tests
 
 ```bash
 python -m pytest -q
 ```
 
-## How to use
+The test suite covers:
 
-1. Open the app.
-2. Paste an SQL Server error message, job history, or incident log.
-3. Or select one of the sample incident files.
-4. Optionally approve sending redacted data to Gemini and/or local memory.
-5. Click **Analyze Incident**.
-6. Review privacy findings, local triage, and optional ADK analysis.
-7. Record which SQL checks were reviewed by a human DBA.
+- incident rule classification
+- sample incident classification
+- privacy redaction
+- local memory behavior
+- ADK workflow structure
+- MCP tool metadata
+- SQL allowlist validation
 
-## Suggested demo flow
+## Demo Flow
 
-Use these three examples:
+For a short demo or Kaggle video, use these samples:
 
 1. `backup_failed_disk_full.txt`
 2. `active_transaction_log_full.txt`
 3. `replication_subscription_failed.txt`
 4. `deadlock_detected.txt`
 
-In the video, show:
+Show:
 
-- the raw incident text
-- the agent analysis
-- severity classification
-- SQL verification queries
-- recommended DBA actions
+- the raw incident input
+- privacy review and redacted preview
+- severity and category
+- likely cause
+- verification steps
+- read-only SQL checks
+- human approval section
+- optional ADK multi-agent response
 
-## Suggested Antigravity workflow
+Supporting submission materials:
 
-You can first build this project in VS Code, then open the same folder in Google Antigravity and ask it to improve one feature.
+- Kaggle writeup draft: `docs/KAGGLE_WRITEUP_TEMPLATE.md`
+- demo video script: `docs/DEMO_VIDEO_SCRIPT.md`
+- submission checklist: `docs/SUBMISSION_CHECKLIST.md`
+- cover image: `assets/cover.svg`
+- architecture image: `assets/architecture.svg`
 
-Example prompt for Antigravity:
+## Security Notes
 
-```text
-Open this project and add a new severity rule for SQL Server deadlock incidents.
-Update the README and add one new sample incident file.
-Keep the code simple and testable.
-```
+This project is intentionally conservative around database operations:
 
-Then mention in your Kaggle video:
+- The Streamlit app does not execute SQL.
+- SQL checks are displayed for human DBA review only.
+- External AI sharing is opt-in.
+- Incident text is redacted before optional ADK/Gemini analysis.
+- The MCP server does not accept arbitrary SQL.
+- Live SQL diagnostics are disabled by default.
+- Live diagnostics use named static queries, row limits, query timeouts, and a
+  read-only ODBC connection.
 
-> The initial version was built in VS Code. I then opened the project in Google Antigravity and used it to refactor the triage rules and add one new incident type.
+Before using any SQL against production:
 
-## Safety notes
-
-The Streamlit app does not execute SQL commands. It suggests allowlisted,
-read-only verification queries and records human approval separately.
-
-The MCP server contains an optional live diagnostic tool. It is disabled by
-default, accepts only named static queries, applies row/time limits, and opens
-the ODBC connection in read-only mode. Database permissions remain the primary
-security boundary.
-
-Before running any SQL against production:
-
-- review every query
+- review every query manually
+- use least-privilege credentials
 - avoid destructive commands
-- do not run shrink or repair commands without a backup and proper approval
+- do not shrink or repair files without backups and approval
 - verify the redacted preview before approving external AI access
-- use a dedicated least-privilege login for optional live diagnostics
 
-## Folder structure
+## Limitations
 
-```text
-sql-server-incident-triage-agent/
-|-- app.py
-|-- assets/
-|-- requirements.txt
-|-- src/
-|   |-- adk_workflow.py
-|   |-- agent.py
-|   |-- mcp_server.py
-|   |-- memory.py
-|   |-- report.py
-|   |-- rules.py
-|   |-- security.py
-|   `-- sqlserver_tools.py
-|-- prompts/
-|-- sample_incidents/
-|-- docs/
-`-- tests/
-```
-
-## License
-
-MIT License. Use and modify freely for your capstone project.
+- The rule engine covers common SQL Server incident patterns, not every possible
+  database failure mode.
+- Optional ADK analysis requires a configured Google API key.
+- Live SQL diagnostics require a compatible SQL Server ODBC setup and are not
+  enabled by default.
+- This project assists triage; it does not replace DBA judgment or change
+  management.
