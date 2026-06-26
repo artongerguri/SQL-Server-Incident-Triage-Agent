@@ -1,0 +1,13 @@
+Performance issue:
+
+Query Store was enabled for database SBCP_CENTRAL and SBCP_TSC.
+After several days, database size increased and users report slow application response.
+
+Symptoms:
+- high CPU
+- slow query duration
+- increased logical reads
+- need to identify what is loading the database
+
+Request:
+Show how to check Query Store for top resource-consuming queries.

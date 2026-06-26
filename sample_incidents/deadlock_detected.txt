@@ -1,0 +1,14 @@
+Application error:
+
+Transaction (Process ID 82) was deadlocked on lock resources with another
+process and has been chosen as the deadlock victim. Rerun the transaction.
+
+SQL Server error: 1205
+
+Context:
+- Users reported intermittent failures during order updates.
+- The same two tables are updated in different order by two application paths.
+- A deadlock graph is available in the system_health Extended Events session.
+
+Request:
+Identify the incident category and the safest DBA verification steps.

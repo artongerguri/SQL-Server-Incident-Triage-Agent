@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">SQL Server Incident Triage Agent Architecture</title>
+  <desc id="desc">Architecture diagram showing Streamlit, privacy guard, local rule engine, ADK workflow, FastMCP tools, SQLite memory, and triage report output.</desc>
+  <rect width="1800" height="1000" fill="#f8fafc"/>
+  <text x="80" y="90" font-family="Segoe UI, Arial, sans-serif" font-size="44" font-weight="800" fill="#0f172a">SQL Server Incident Triage Agent Architecture</text>
+  <text x="80" y="140" font-family="Segoe UI, Arial, sans-serif" font-size="24" fill="#475569">Local-first triage, optional ADK analysis, read-only MCP tools, and explicit human approval.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#334155"/>
+    </marker>
+    <style>
+      .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 3; }
+      .blue { fill: #dbeafe; stroke: #60a5fa; }
+      .teal { fill: #ccfbf1; stroke: #2dd4bf; }
+      .violet { fill: #ede9fe; stroke: #a78bfa; }
+      .amber { fill: #fef3c7; stroke: #f59e0b; }
+      .text { font-family: Segoe UI, Arial, sans-serif; fill: #0f172a; font-size: 24px; font-weight: 700; }
+      .small { font-family: Segoe UI, Arial, sans-serif; fill: #475569; font-size: 18px; }
+      .line { stroke: #334155; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="box blue" x="80" y="250" width="260" height="110" rx="18"/>
+  <text class="text" x="120" y="296">DBA / Engineer</text>
+  <text class="small" x="120" y="330">Pastes incident log</text>
+
+  <rect class="box blue" x="440" y="250" width="260" height="110" rx="18"/>
+  <text class="text" x="493" y="296">Streamlit UI</text>
+  <text class="small" x="482" y="330">Controls and results</text>
+
+  <rect class="box teal" x="800" y="250" width="280" height="110" rx="18"/>
+  <text class="text" x="850" y="296">Privacy Guard</text>
+  <text class="small" x="835" y="330">Redaction + limits</text>
+
+  <rect class="box" x="1180" y="210" width="300" height="110" rx="18"/>
+  <text class="text" x="1232" y="256">Rule Engine</text>
+  <text class="small" x="1218" y="290">Deterministic fallback</text>
+
+  <rect class="box violet" x="1180" y="390" width="300" height="120" rx="18"/>
+  <text class="text" x="1240" y="436">ADK Workflow</text>
+  <text class="small" x="1215" y="470">Triage + safety + coordinator</text>
+
+  <rect class="box amber" x="1180" y="610" width="300" height="120" rx="18"/>
+  <text class="text" x="1255" y="656">SQLite Memory</text>
+  <text class="small" x="1225" y="690">Redacted previews only</text>
+
+  <rect class="box violet" x="800" y="610" width="280" height="120" rx="18"/>
+  <text class="text" x="862" y="656">FastMCP Server</text>
+  <text class="small" x="828" y="690">Read-only named tools</text>
+
+  <rect class="box teal" x="80" y="610" width="300" height="120" rx="18"/>
+  <text class="text" x="150" y="656">Triage Report</text>
+  <text class="small" x="125" y="690">Actions require DBA approval</text>
+
+  <path class="line" d="M340 305 H440"/>
+  <path class="line" d="M700 305 H800"/>
+  <path class="line" d="M1080 290 H1180"/>
+  <path class="line" d="M940 360 V445 H1180"/>
+  <path class="line" d="M1180 450 H1080"/>
+  <path class="line" d="M940 610 V510 H1180"/>
+  <path class="line" d="M940 360 V610"/>
+  <path class="line" d="M1180 670 H1080"/>
+  <path class="line" d="M1180 265 C940 175, 520 500, 380 635"/>
+  <path class="line" d="M1180 450 C900 520, 520 565, 380 660"/>
+
+  <text x="840" y="420" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#1e40af">Opt-in only</text>
+  <text x="1010" y="590" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#7c2d12">No arbitrary SQL</text>
+  <text x="95" y="815" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#0f172a">Security notes</text>
+  <text x="95" y="855" font-family="Segoe UI, Arial, sans-serif" font-size="20" fill="#475569">External AI requires explicit approval. The UI does not execute SQL. Live SQL diagnostics are disabled by default.</text>
+</svg>
+

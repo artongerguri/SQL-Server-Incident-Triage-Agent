@@ -1,0 +1,14 @@
+Replication issue:
+
+Local subscription creation failed.
+Linked server was deleted and needs to be recreated.
+Publication contains articles:
+- UserWorkstations
+- Referential_Data
+
+Tables StopwatchData and MIA_NFA_ReferentialData must be excluded.
+
+Error:
+The object dbo.TravelDocumentPictures does not exist in database SBCP.
+Correct table name is dbo.TravelDocumentCheckPictures.
+Primary key: TravelDocumentCheckID

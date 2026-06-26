@@ -1,0 +1,18 @@
+Database: SBCP
+Recovery model: SIMPLE
+Log file size: 233 GB
+Free disk space on log drive: 9 MB
+
+sys.databases:
+name = SBCP
+log_reuse_wait_desc = ACTIVE_TRANSACTION
+
+DBCC OPENTRAN result:
+Oldest active transaction:
+SPID = 123
+Name = UPDATE
+Start time = 2025-10-07 10:00:12 AM
+LSN = (319163:139480:1)
+
+Issue:
+Transaction log is full and shrink file has no effect.

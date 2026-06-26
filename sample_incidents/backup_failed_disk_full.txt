@@ -1,0 +1,15 @@
+Job: MaintenancePlan_Backup.Subplan_1
+Status: Failed
+
+Executed as user: NT Service\SQLSERVERAGENT.
+Microsoft SQL Server Execute Package Utility Version 16.0.
+
+Error:
+BACKUP DATABASE is terminating abnormally.
+Operating system error 112(There is not enough space on the disk.).
+The step failed.
+
+Context:
+Database: SBCP
+Backup path: M:\Backup
+The backup destination volume has low free space.
