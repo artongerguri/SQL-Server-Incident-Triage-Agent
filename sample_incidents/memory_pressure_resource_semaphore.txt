@@ -1,0 +1,12 @@
+Incident:
+
+SQL Server performance degraded during business hours.
+
+Symptoms:
+- queries wait on RESOURCE_SEMAPHORE
+- Page life expectancy dropped sharply
+- error 701 insufficient system memory appeared once in the error log
+- several reporting queries request large memory grants
+
+Request:
+Classify the incident and recommend safe checks.

@@ -1,10 +1,10 @@
-Database: SBCP
+Database: ClaimsDemo
 Recovery model: SIMPLE
 Log file size: 233 GB
 Free disk space on log drive: 9 MB
 
 sys.databases:
-name = SBCP
+name = ClaimsDemo
 log_reuse_wait_desc = ACTIVE_TRANSACTION
 
 DBCC OPENTRAN result:

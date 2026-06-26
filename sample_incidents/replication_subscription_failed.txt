@@ -9,6 +9,6 @@ Publication contains articles:
 Tables StopwatchData and MIA_NFA_ReferentialData must be excluded.
 
 Error:
-The object dbo.TravelDocumentPictures does not exist in database SBCP.
+The object dbo.TravelDocumentPictures does not exist in database ClaimsDemo.
 Correct table name is dbo.TravelDocumentCheckPictures.
 Primary key: TravelDocumentCheckID

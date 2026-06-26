@@ -115,7 +115,7 @@ _ALLOWED_EXEC = {
     "sp_helppublication",
     "sp_helpsubscription",
 }
-_ALLOWED_DBCC = {"OPENTRAN", "SQLPERF"}
+_ALLOWED_DBCC = {"CHECKDB", "OPENTRAN", "SQLPERF"}
 
 
 def is_read_only_sql(sql: str) -> bool:

@@ -12,6 +12,7 @@ flowchart LR
     U[DBA / System Engineer] --> UI[Streamlit App]
     UI --> P[Privacy Guard]
     P --> R[Local Rule Engine]
+    SK[Agent Skill Runbook] --> R
     R --> REP[Structured Triage Report]
     P -->|explicit opt-in only| ADK[Google ADK Workflow]
     ADK --> A1[Triage Agent]
@@ -34,8 +35,12 @@ flowchart LR
 - The ADK workflow uses three specialized agents: triage, safety review, and
   final coordination.
 - The MCP server exposes named tools instead of arbitrary SQL execution.
+- The Agent Skill runbook keeps reusable SQL Server triage procedure separate
+  from application code.
 - Live SQL diagnostics are disabled by default and require explicit environment
   configuration plus least-privilege database permissions.
+- Unknown incidents can be saved as custom local samples only after redaction,
+  ADK/operator review, and explicit user approval.
 
 ## Data flow
 
@@ -43,10 +48,14 @@ flowchart LR
 2. The privacy guard redacts secrets, users, hosts, databases, IPs, and paths.
 3. The deterministic rule engine classifies the incident and generates safe
    verification steps.
-4. If the user approves external AI access and `GOOGLE_API_KEY` is configured,
+4. The Agent Skill runbook documents the procedure and category reference used
+   to keep triage behavior reviewable.
+5. If the user approves external AI access and `GOOGLE_API_KEY` is configured,
    the redacted incident is sent to the ADK workflow.
-5. The triage agent can use read-only MCP tools for deterministic analysis,
+6. The triage agent can use read-only MCP tools for deterministic analysis,
    diagnostic discovery, and redacted memory search.
-6. The safety reviewer checks the advice for unsupported claims, privacy risk,
+7. The safety reviewer checks the advice for unsupported claims, privacy risk,
    and unsafe operational actions.
-7. The coordinator returns one concise DBA-facing response.
+8. The coordinator returns one concise DBA-facing response.
+9. If no local rule matched and the operator approves the reviewed guidance, the
+   app can save a redacted custom sample under `sample_incidents/custom/`.

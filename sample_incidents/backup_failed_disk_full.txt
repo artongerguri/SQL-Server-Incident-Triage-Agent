@@ -10,6 +10,6 @@ Operating system error 112(There is not enough space on the disk.).
 The step failed.
 
 Context:
-Database: SBCP
+Database: ClaimsDemo
 Backup path: M:\Backup
 The backup destination volume has low free space.

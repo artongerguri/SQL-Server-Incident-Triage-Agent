@@ -33,6 +33,36 @@ def test_deadlock_is_detected():
     assert result["severity"] == "High"
 
 
+def test_tempdb_pressure_is_detected():
+    result = build_local_analysis("Error 1105: tempdb is full and version store is growing")
+    assert result["category"] == "TempDB"
+    assert result["severity"] == "Critical"
+
+
+def test_database_integrity_issue_is_detected():
+    result = build_local_analysis("Error 824 page checksum database is suspect")
+    assert result["category"] == "Database Integrity"
+    assert result["severity"] == "Critical"
+
+
+def test_high_availability_issue_is_detected():
+    result = build_local_analysis("Always On availability group is not synchronizing and redo queue is growing")
+    assert result["category"] == "High Availability"
+    assert result["severity"] == "Critical"
+
+
+def test_connectivity_issue_is_detected():
+    result = build_local_analysis("Pre-login handshake timeout expired with transport-level error")
+    assert result["category"] == "Connectivity"
+    assert result["severity"] == "High"
+
+
+def test_transaction_log_growth_issue_is_detected():
+    result = build_local_analysis("Transaction log file autogrowth caused WRITELOG waits and high VLF count")
+    assert result["category"] == "Transaction Log Growth"
+    assert result["severity"] == "High"
+
+
 def test_unknown_incident_uses_safe_fallback():
     result = build_local_analysis("An unfamiliar SQL Server message")
     assert result["severity"] == "Unknown"
@@ -42,10 +72,19 @@ def test_unknown_incident_uses_safe_fallback():
 def test_sample_incidents_classify_to_expected_categories():
     expected = {
         "active_transaction_log_full.txt": "Transaction Log",
+        "always_on_not_synchronizing.txt": "High Availability",
         "backup_failed_disk_full.txt": "Backup / Storage",
+        "backup_chain_rpo_risk.txt": "Backup / Recovery",
+        "blocking_chain_lck_m_waits.txt": "Blocking / Locks",
+        "connectivity_prelogin_timeout.txt": "Connectivity",
+        "database_suspect_page_checksum.txt": "Database Integrity",
         "deadlock_detected.txt": "Concurrency",
+        "login_failed_18456.txt": "Authentication / Access",
+        "memory_pressure_resource_semaphore.txt": "Memory Pressure",
         "query_store_high_cpu.txt": "Performance",
         "replication_subscription_failed.txt": "Replication",
+        "tempdb_space_pressure.txt": "TempDB",
+        "transaction_log_autogrowth_vlf_pressure.txt": "Transaction Log Growth",
     }
 
     for filename, category in expected.items():

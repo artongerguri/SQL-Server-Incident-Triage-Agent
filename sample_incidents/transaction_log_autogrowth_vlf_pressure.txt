@@ -1,0 +1,17 @@
+Incident:
+
+Users report slow writes during peak order processing.
+
+SQL Server error log shows frequent transaction log file autogrowth events.
+
+Symptoms:
+- log file grew many times during the last hour
+- WRITELOG waits increased
+- virtual log file count is high
+- log write waits are visible during application timeouts
+
+Context:
+The database is in FULL recovery model and log backups run every 60 minutes.
+
+Request:
+Classify the issue and recommend safe checks before changing log size.

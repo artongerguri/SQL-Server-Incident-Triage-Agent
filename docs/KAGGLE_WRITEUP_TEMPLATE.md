@@ -15,10 +15,11 @@ Agents for Business
 ## Problem
 
 SQL Server incidents often arrive as long error logs, failed SQL Agent job
-messages, replication errors, deadlock messages, or Query Store findings. During
-a production incident, a DBA or system engineer has to quickly identify the
-likely category, severity, evidence to collect, and the next safe action. This
-is time-sensitive work: a wrong action can make recovery slower or increase
+messages, replication errors, TempDB pressure, availability group warnings,
+deadlock messages, corruption signals, login failures, or Query Store findings.
+During a production incident, a DBA or system engineer has to quickly identify
+the likely category, severity, evidence to collect, and the next safe action.
+This is time-sensitive work: a wrong action can make recovery slower or increase
 business downtime.
 
 ## Solution
@@ -33,6 +34,7 @@ a structured triage report with:
 - verification steps
 - recommended DBA actions
 - read-only SQL checks
+- privacy review
 - optional ADK multi-agent analysis
 
 The local deterministic rule engine always runs first, so the project remains
@@ -63,11 +65,12 @@ The app follows a safety-first flow:
 2. A privacy guard redacts secrets, emails, IPs, users, hosts, database names,
    and paths.
 3. The local rule engine creates a deterministic triage result.
-4. Optional SQLite memory stores only redacted previews and classifications.
-5. With explicit user approval, ADK runs triage, safety review, and coordination
+4. The Agent Skill runbook documents the reusable SQL Server triage procedure.
+5. Optional SQLite memory stores only redacted previews and classifications.
+6. With explicit user approval, ADK runs triage, safety review, and coordination
    agents.
-6. The triage agent uses a FastMCP server with read-only tools.
-7. The UI records human DBA approval for suggested SQL checks but does not
+7. The triage agent uses a FastMCP server with read-only tools.
+8. The UI records human DBA approval for suggested SQL checks but does not
    execute SQL.
 
 See `docs/ARCHITECTURE.md` for the diagram.
@@ -79,7 +82,8 @@ See `docs/ARCHITECTURE.md` for the diagram.
 | Agent / multi-agent system with ADK | `src/adk_workflow.py` implements triage, safety, and coordinator agents. |
 | MCP Server | `src/mcp_server.py` exposes read-only incident analysis, diagnostics listing, and memory search tools. |
 | Security features | `src/security.py` redacts sensitive values, enforces SQL allowlists, and gates external AI sharing behind explicit approval. |
-| Agent skills / tool use | The ADK triage agent calls MCP tools instead of relying only on free-form model reasoning. |
+| Agent Skills | `skills/sql-server-incident-triage/SKILL.md` captures the reusable SQL Server triage runbook and category reference. |
+| Agent tool use | The ADK triage agent calls MCP tools instead of relying only on free-form model reasoning. |
 | Deployability | The public repository includes setup instructions, environment configuration, and tests. |
 
 ## Safety and privacy
@@ -96,12 +100,19 @@ The project avoids common risks for database assistants:
 
 ## Demo scenario
 
-The demo can show four anonymized sample incidents:
+The repository includes 14 anonymized sample incidents covering backup/storage,
+transaction log pressure, replication, Query Store performance, deadlocks,
+TempDB pressure, blocking, database integrity, login failures, Always On health,
+backup chain risk, transaction log autogrowth, memory pressure, and connectivity
+timeouts.
+
+For a 5-minute video, the demo can show a focused subset:
 
 1. failed backup because the target disk is full
-2. transaction log blocked by `ACTIVE_TRANSACTION`
-3. replication subscription failure
+2. TempDB space pressure
+3. database suspect / page checksum warning
 4. SQL Server deadlock victim error 1205
+5. Always On database not synchronizing
 
 For each sample, the app shows the category, severity, likely cause, verification
 steps, recommended actions, privacy review, and safe SQL checks.
@@ -118,13 +129,15 @@ services, reporting, or transaction processing.
 The project includes focused tests for rule matching, privacy redaction, memory,
 MCP/ADK integration, and SQL allowlist behavior. The local engine works without
 network access, while the ADK workflow adds optional AI reasoning when configured.
+The Agent Skill runbook keeps domain triage procedure separate from code, making
+the project easier to review, reuse, and extend.
 
 ## Limitations and future work
 
-- Add more incident categories such as corruption, login failures, availability
-  group failover, and tempdb pressure.
+- Add richer evidence ingestion from SQL Server error logs, Windows event logs,
+  and monitoring systems.
+- Convert high-value custom samples into reviewed deterministic rules.
 - Add optional Markdown/PDF export after the triage result is finalized.
 - Test live SQL diagnostics against a dedicated non-production SQL Server login.
 - Add deployment instructions for Streamlit Community Cloud or Cloud Run if a
   live demo is preferred over a public GitHub repository.
-

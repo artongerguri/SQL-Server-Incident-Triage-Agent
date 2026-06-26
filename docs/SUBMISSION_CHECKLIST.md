@@ -20,8 +20,11 @@ repository and make sure it includes:
 - `.env.example` without real secrets
 - `requirements.txt`
 - sample incident files
+- custom sample workflow documented if shown in the video
+- Agent Skill folder under `skills/`
 - tests
 - architecture explanation
+- no real `.env` or API key committed
 
 ## Final code checks
 
@@ -46,6 +49,6 @@ Before publishing, confirm that these are not committed:
 - Why agents are useful for this workflow.
 - ADK multi-agent architecture.
 - MCP tools and read-only design.
+- Agent Skill runbook and how it captures reusable triage procedure.
 - Security guardrails and human DBA approval.
-- Demo examples and limitations.
-
+- Expanded SQL Server incident scenarios and limitations.

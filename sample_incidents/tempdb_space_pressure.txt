@@ -1,0 +1,14 @@
+Incident:
+
+SQL Server reported error 1105:
+Could not allocate space for object in database 'tempdb' because the filegroup
+is full.
+
+Symptoms:
+- tempdb is full
+- version store is growing
+- several reporting queries are running longer than usual
+- users report application timeouts during month-end reporting
+
+Request:
+Identify the safest verification steps before adding more TempDB space.

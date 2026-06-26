@@ -1,0 +1,13 @@
+Incident:
+
+Daily health check found a recovery point objective risk.
+
+Findings:
+- no recent log backup for database FinanceOps
+- last log backup is older than the RPO
+- full backup succeeded two days ago
+- SQL Agent backup job history shows intermittent failures
+- backup chain may not support point-in-time recovery
+
+Request:
+Classify the issue and recommend what to verify before relying on recovery.

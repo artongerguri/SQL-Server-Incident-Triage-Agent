@@ -1,0 +1,15 @@
+Incident:
+
+Application users report that order screens are hanging.
+
+Current DMV snapshot:
+- wait_type = LCK_M_X
+- blocking_session_id = 87
+- several sessions are waiting on the same waitresource
+- one head blocker has been open for more than 45 minutes
+
+Context:
+The issue started after a large import job began.
+
+Request:
+Classify the incident and provide DBA-safe next steps.

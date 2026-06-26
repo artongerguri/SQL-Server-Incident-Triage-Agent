@@ -1,6 +1,6 @@
 Performance issue:
 
-Query Store was enabled for database SBCP_CENTRAL and SBCP_TSC.
+Query Store was enabled for database AppCoreDemo and ReportingDemo.
 After several days, database size increased and users report slow application response.
 
 Symptoms:

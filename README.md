@@ -2,10 +2,10 @@
 
 An AI-assisted incident triage application for SQL Server DBAs and system
 engineers. The agent turns noisy SQL Server errors, job failures, replication
-messages, deadlock reports, and Query Store findings into a structured,
-safety-aware action plan.
+messages, TempDB pressure, availability group warnings, deadlock reports, and
+Query Store findings into a structured, safety-aware action plan.
 
-This project was built for the **Kaggle AI Agents: Intensive Vibe Coding
+This project is built for the **Kaggle AI Agents: Intensive Vibe Coding
 Capstone Project**. It demonstrates a practical business use case for AI agents:
 reducing the time required to understand database incidents while keeping human
 DBA approval in the loop for operational actions.
@@ -30,11 +30,20 @@ returns:
 Supported incident patterns include:
 
 - failed backups caused by disk space problems
+- stale backups and recovery point risk
 - full transaction logs and `ACTIVE_TRANSACTION`
 - SQL Agent or maintenance plan failures
 - replication subscription issues
 - Query Store / high CPU investigations
 - SQL Server deadlocks
+- TempDB space pressure
+- blocking chains and lock waits
+- suspect databases and page checksum errors
+- login failures and authentication issues
+- Always On availability group synchronization problems
+- SQL Server memory pressure
+- connectivity and pre-login timeout errors
+- transaction log autogrowth and VLF pressure
 - general fallback guidance for unknown SQL Server incidents
 
 ## Why This Matters
@@ -51,9 +60,6 @@ This agent is designed to help with the first triage phase:
 - separate observed facts from likely causes
 - surface safe read-only checks
 - require human review before operational action
-
-The project is intended for demo and educational use. Do not connect it to a
-production database without a security review and least-privilege credentials.
 
 ## Key Features
 
@@ -73,6 +79,13 @@ production database without a security review and least-privilege credentials.
   allowlisted read-only operations.
 - **Tests included**: rules, redaction, memory, MCP integration, ADK workflow
   structure, and SQL allowlist behavior.
+- **Expanded scenario library**: 14 anonymized SQL Server incident samples for
+  demos, testing, and Kaggle submission evidence.
+- **User-approved custom samples**: unknown incidents can be saved locally as
+  redacted reusable samples after ADK guidance and DBA/operator review.
+- **Agent Skill runbook**: `skills/sql-server-incident-triage/SKILL.md`
+  captures the reusable SQL Server triage procedure from the course's Agent
+  Skills concept.
 
 ## Architecture
 
@@ -121,6 +134,7 @@ flowchart LR
 | Agent / multi-agent system with ADK | `src/adk_workflow.py` |
 | MCP server | `src/mcp_server.py` |
 | Security features | `src/security.py`, Streamlit opt-in controls, SQL allowlist |
+| Agent Skill / procedural memory | `skills/sql-server-incident-triage/SKILL.md` |
 | Agent tool use | ADK triage agent calling MCP tools |
 | Deployability | Public GitHub repository with setup instructions |
 
@@ -129,7 +143,7 @@ flowchart LR
 - Python
 - Streamlit
 - Google Agent Development Kit (ADK)
-- Gemini model access through ADK
+- Optional Gemini model access through ADK
 - FastMCP / Model Context Protocol
 - SQLite
 - pyodbc for optional SQL Server diagnostics
@@ -151,10 +165,19 @@ sql-server-incident-triage-agent/
 |-- prompts/
 |-- sample_incidents/
 |   |-- active_transaction_log_full.txt
+|   |-- always_on_not_synchronizing.txt
+|   |-- backup_chain_rpo_risk.txt
 |   |-- backup_failed_disk_full.txt
+|   |-- blocking_chain_lck_m_waits.txt
+|   |-- connectivity_prelogin_timeout.txt
+|   |-- database_suspect_page_checksum.txt
 |   |-- deadlock_detected.txt
+|   |-- login_failed_18456.txt
+|   |-- memory_pressure_resource_semaphore.txt
 |   |-- query_store_high_cpu.txt
-|   `-- replication_subscription_failed.txt
+|   |-- replication_subscription_failed.txt
+|   |-- tempdb_space_pressure.txt
+|   `-- transaction_log_autogrowth_vlf_pressure.txt
 |-- src/
 |   |-- adk_workflow.py
 |   |-- agent.py
@@ -165,6 +188,10 @@ sql-server-incident-triage-agent/
 |   |-- security.py
 |   `-- sqlserver_tools.py
 |-- tests/
+|-- skills/
+|   `-- sql-server-incident-triage/
+|       |-- SKILL.md
+|       `-- references/
 |-- .env.example
 |-- requirements.txt
 `-- README.md
@@ -241,6 +268,29 @@ Typical workflow:
    ADK analysis, and SQL checks.
 7. Record DBA approval for reviewed SQL checks.
 
+## Learning From Unknown Incidents
+
+If no local rule matches an incident, the app can optionally use the ADK/Gemini
+workflow when `GOOGLE_API_KEY` is configured and the user approves sharing the
+redacted incident text.
+
+After a DBA or operator verifies that the ADK guidance is useful, the UI can save
+a new redacted sample under:
+
+```text
+sample_incidents/custom/
+```
+
+This is intentionally approval-based:
+
+- the app never sends incident text to external AI without opt-in
+- the app saves only the redacted incident and reviewed notes
+- custom samples are ignored by git through `.gitignore`
+- saving a sample does not automatically create a new rule in `src/rules.py`
+
+If the sample becomes generally useful, review it manually and add a proper
+deterministic rule and test before publishing it.
+
 ## Run The MCP Server
 
 The ADK workflow starts the MCP stdio server automatically. You can also run it
@@ -277,14 +327,35 @@ The test suite covers:
 - MCP tool metadata
 - SQL allowlist validation
 
+## Agent Skill Runbook
+
+The project includes a formal Agent Skill-style runbook:
+
+```text
+skills/sql-server-incident-triage/SKILL.md
+```
+
+It documents how an agent should classify SQL Server incidents, use MCP tools
+safely, keep SQL checks read-only, require DBA approval, and handle unknown
+incidents. The supporting category reference is:
+
+```text
+skills/sql-server-incident-triage/references/incident_categories.md
+```
+
+This demonstrates the training concept of procedural memory: reusable expert
+workflow instructions kept separate from application code.
+
 ## Demo Flow
 
-For a short demo or Kaggle video, use these samples:
+The project includes 14 sample incidents. For a short Kaggle video, use a small
+representative set:
 
 1. `backup_failed_disk_full.txt`
-2. `active_transaction_log_full.txt`
-3. `replication_subscription_failed.txt`
+2. `tempdb_space_pressure.txt`
+3. `database_suspect_page_checksum.txt`
 4. `deadlock_detected.txt`
+5. `always_on_not_synchronizing.txt`
 
 Show:
 
@@ -328,8 +399,8 @@ Before using any SQL against production:
 
 ## Limitations
 
-- The rule engine covers common SQL Server incident patterns, not every possible
-  database failure mode.
+- The rule engine covers common SQL Server incident patterns, but it is still a
+  triage assistant rather than a complete observability platform.
 - Optional ADK analysis requires a configured Google API key.
 - Live SQL diagnostics require a compatible SQL Server ODBC setup and are not
   enabled by default.

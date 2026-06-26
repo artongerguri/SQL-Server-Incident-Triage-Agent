@@ -1,0 +1,14 @@
+Incident:
+
+SQL Server error log contains:
+
+Error 824, SQL Server detected a logical consistency-based I/O error:
+incorrect pageid or page checksum.
+
+Database state:
+- Database: BillingDemo
+- State: SUSPECT
+- msdb.dbo.suspect_pages contains recent entries
+
+Request:
+Suggest the safest triage steps before any repair or recovery action.

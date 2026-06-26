@@ -1,0 +1,16 @@
+Incident:
+
+Multiple application servers report intermittent SQL Server connectivity errors.
+
+Errors:
+- Timeout expired
+- A network-related or instance-specific error occurred
+- The connection was forcibly closed by the remote host
+- Pre-login handshake timeout
+- connection pool exhaustion suspected
+
+Context:
+A firewall rule was changed during the same maintenance window.
+
+Request:
+Classify the issue and provide a safe triage plan.

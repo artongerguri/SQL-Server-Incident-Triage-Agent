@@ -11,7 +11,8 @@ to analyze SQL Server incidents quickly and safely.
 ## 0:20 - Problem
 
 SQL Server incidents often arrive as long logs, failed SQL Agent job histories,
-deadlock errors, replication messages, or Query Store findings. During a
+TempDB errors, database integrity warnings, deadlock errors, replication
+messages, availability group alerts, or Query Store findings. During a
 production incident, the DBA needs to classify the problem, understand severity,
 collect evidence, and avoid unsafe actions.
 
@@ -42,25 +43,27 @@ Load `backup_failed_disk_full.txt`.
 Show that the agent detects Backup / Storage with Critical severity. Point out
 the likely cause, verification steps, and read-only SQL checks.
 
-## 2:35 - Demo 2: active transaction
+## 2:35 - Demo 2: TempDB or database integrity
 
-Load `active_transaction_log_full.txt`.
+Load `tempdb_space_pressure.txt` or `database_suspect_page_checksum.txt`.
 
-Show that the agent detects a transaction log issue caused by
-`ACTIVE_TRANSACTION`. Emphasize that it recommends verification before any shrink
-or operational action.
+Show that the agent recognizes a high-impact database incident and recommends
+verification before operational action. Emphasize that the app suggests checks
+but does not execute SQL.
 
-## 3:10 - Demo 3: replication or deadlock
+## 3:10 - Demo 3: deadlock or availability group
 
-Use either `replication_subscription_failed.txt` or `deadlock_detected.txt`.
+Use either `deadlock_detected.txt` or `always_on_not_synchronizing.txt`.
 
-For replication, show the agent identifying the failed subscription path. For
-deadlock, show the category as Concurrency and the recommendation to inspect the
-deadlock graph and transaction lock order.
+For deadlock, show the category as Concurrency and the recommendation to inspect
+the deadlock graph and lock order. For availability groups, show the High
+Availability category, synchronization health, and failover caution.
 
 ## 3:45 - Security features
 
-Show the privacy review panel and the external AI approval checkbox.
+Show the privacy review panel and the external AI approval control. If no
+Gemini API key is configured, explain that the external AI option remains
+disabled and the local triage engine still works.
 
 Explain:
 
@@ -76,7 +79,11 @@ Mention the key concepts demonstrated:
 
 - Google ADK multi-agent workflow
 - MCP server
+- Agent Skill runbook for SQL Server incident triage
 - security guardrails
+- 14 SQL Server incident scenarios
+- optional user-approved custom sample creation for unknown incidents when ADK
+  is configured
 - agent tool use
 - public GitHub setup instructions
 
@@ -88,4 +95,3 @@ show or describe that workflow honestly.
 This project demonstrates a practical business agent that reduces SQL Server
 incident triage time, improves consistency, and keeps human DBA approval in the
 loop for operational actions.
-

@@ -1,0 +1,16 @@
+Incident:
+
+Application cannot connect to SQL Server.
+
+Error:
+Login failed for user 'app_reporting'.
+SQL Server Error: 18456
+Cannot open database requested by the login. The login failed.
+
+Symptoms:
+- only the reporting application is affected
+- other applications can connect
+- a database was renamed earlier today
+
+Request:
+Classify the issue and show what should be checked first.

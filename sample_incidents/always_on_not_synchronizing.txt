@@ -1,0 +1,15 @@
+Incident:
+
+Always On availability group warning:
+
+Database SalesDW is not synchronizing on the secondary replica.
+Synchronization health is NOT_HEALTHY.
+The log send queue and redo queue are increasing.
+
+Context:
+- users can still connect to the primary
+- network maintenance happened earlier
+- no forced failover has been attempted
+
+Request:
+Identify severity and safe verification steps.

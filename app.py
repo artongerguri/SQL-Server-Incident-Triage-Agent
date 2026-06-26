@@ -7,9 +7,15 @@ from src.adk_workflow import is_adk_configured
 from src.agent import IncidentTriageAgent
 from src.memory import IncidentMemoryStore
 from src.report import render_markdown_report
+from src.sample_library import (
+    create_custom_sample,
+    is_actionable_adk_analysis,
+    list_sample_names,
+    load_sample_text,
+)
 
 
-load_dotenv()
+load_dotenv(override=True)
 
 APP_DIR = Path(__file__).parent
 SAMPLE_DIR = APP_DIR / "sample_incidents"
@@ -27,9 +33,7 @@ st.set_page_config(
 def load_selected_sample() -> None:
     selected = st.session_state.get("selected_sample")
     if selected and selected != "-- Select sample --":
-        st.session_state["incident_input"] = (SAMPLE_DIR / selected).read_text(
-            encoding="utf-8"
-        )
+        st.session_state["incident_input"] = load_sample_text(SAMPLE_DIR, selected)
 
 
 if "incident_input" not in st.session_state:
@@ -68,14 +72,16 @@ with st.sidebar:
 
     st.divider()
     st.subheader("Sample incidents")
-    sample_files = sorted(SAMPLE_DIR.glob("*.txt"))
-    sample_names = ["-- Select sample --"] + [path.name for path in sample_files]
+    sample_names = ["-- Select sample --"] + list_sample_names(SAMPLE_DIR)
     st.selectbox(
         "Load sample incident",
         sample_names,
         key="selected_sample",
         on_change=load_selected_sample,
     )
+    saved_message = st.session_state.pop("custom_sample_saved_message", None)
+    if saved_message:
+        st.success(saved_message)
 
     store = IncidentMemoryStore()
     if store.path.exists():
@@ -144,6 +150,82 @@ if result:
         )
 
     st.markdown(render_markdown_report(result))
+
+    if not result.get("matched_rules"):
+        st.subheader("Learn from this incident")
+        st.caption(
+            "No local rule matched this incident. If ADK/Gemini produced useful "
+            "guidance and a DBA reviewed it, you can save a redacted sample for "
+            "future local demos. This does not create a new automatic rule."
+        )
+        adk_analysis = result.get("adk_analysis")
+        can_save_custom_sample = is_actionable_adk_analysis(adk_analysis)
+        if not is_adk_configured():
+            st.info(
+                "Configure GOOGLE_API_KEY and approve external AI sharing if you "
+                "want ADK help for unknown incidents. Without an API key, the app "
+                "continues with local rules and existing samples."
+            )
+        elif not can_save_custom_sample:
+            st.info(
+                "Run this incident with ADK enabled and external AI sharing "
+                "approved. After you verify the ADK guidance, this panel can save "
+                "a redacted reusable sample."
+            )
+        else:
+            severity_options = ["Critical", "High", "Medium", "Low", "Unknown"]
+            current_severity = result.get("severity", "Unknown")
+            severity_index = (
+                severity_options.index(current_severity)
+                if current_severity in severity_options
+                else len(severity_options) - 1
+            )
+            with st.form(f"save_custom_sample_{result.get('incident_fingerprint')}"):
+                filename_hint = st.text_input(
+                    "Local sample filename",
+                    value=f"custom_{result.get('incident_fingerprint', 'incident')}",
+                    help="Saved under sample_incidents/custom/ and ignored by git.",
+                )
+                confirmed_category = st.text_input(
+                    "Confirmed category",
+                    value="Custom / Unclassified",
+                    help="Use the category confirmed by the DBA after reviewing the ADK output.",
+                )
+                confirmed_severity = st.selectbox(
+                    "Confirmed severity",
+                    severity_options,
+                    index=severity_index,
+                )
+                operator_notes = st.text_area(
+                    "Verified notes / ADK analysis to save",
+                    value=adk_analysis,
+                    height=180,
+                )
+                approve_save = st.checkbox(
+                    "I approve saving only the redacted incident and notes locally."
+                )
+                submitted = st.form_submit_button("Save redacted custom sample")
+                if submitted:
+                    if not approve_save:
+                        st.warning("Approve local storage before saving the sample.")
+                    else:
+                        saved_name = create_custom_sample(
+                            sample_dir=SAMPLE_DIR,
+                            redacted_incident=result.get("privacy", {}).get(
+                                "redacted_text", ""
+                            ),
+                            confirmed_category=confirmed_category,
+                            confirmed_severity=confirmed_severity,
+                            filename_hint=filename_hint,
+                            operator_notes=operator_notes,
+                            source_fingerprint=result.get(
+                                "incident_fingerprint", ""
+                            ),
+                        )
+                        st.session_state["custom_sample_saved_message"] = (
+                            f"Saved custom sample: {saved_name}"
+                        )
+                        st.rerun()
 
     st.subheader("Human approval")
     st.caption(
