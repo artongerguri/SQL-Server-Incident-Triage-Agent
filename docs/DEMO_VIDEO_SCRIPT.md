@@ -25,7 +25,8 @@ claims and unsafe recommendations.
 
 ## 1:20 - Architecture
 
-Show `docs/ARCHITECTURE.md` or the diagram in the README.
+Show `assets/safety_first_agent_flow.svg` or the architecture section in the
+README.
 
 Explain the flow:
 
@@ -61,9 +62,9 @@ Availability category, synchronization health, and failover caution.
 
 ## 3:45 - Security features
 
-Show the privacy review panel and the external AI approval control. If no
-Gemini API key is configured, explain that the external AI option remains
-disabled and the local triage engine still works.
+Show `assets/security_boundary_diagram.svg`, the privacy review panel, and the
+external AI approval control. If no Gemini API key is configured, explain that
+the external AI option remains disabled and the local triage engine still works.
 
 Explain:
 
@@ -73,22 +74,30 @@ Explain:
 - the UI does not execute SQL
 - SQL checks require DBA review
 
+If time allows, briefly show `assets/incident_knowledge_loop.svg` and explain
+that unknown incidents can become reusable redacted samples only after ADK
+guidance and human approval.
+
 ## 4:20 - Build and course concepts
 
 Mention the key concepts demonstrated:
 
+- The project was developed and reviewed using VS Code and Google Antigravity
+  IDE as coding/development tools.
 - Google ADK multi-agent workflow
 - MCP server
 - Agent Skill runbook for SQL Server incident triage
 - security guardrails
+- focused code comments around ADK tool filtering, privacy, MCP read-only
+  behavior, and SQL allowlisting
 - 14 SQL Server incident scenarios
 - optional user-approved custom sample creation for unknown incidents when ADK
   is configured
 - agent tool use
 - public GitHub setup instructions
 
-Only mention Google Antigravity if you actually opened the project there and can
-show or describe that workflow honestly.
+If you show Antigravity in the video, briefly show the project opened there or
+state the specific review/refinement task you used it for.
 
 ## 4:50 - Conclusion
 

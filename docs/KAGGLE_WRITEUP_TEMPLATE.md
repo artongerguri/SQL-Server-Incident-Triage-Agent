@@ -73,7 +73,11 @@ The app follows a safety-first flow:
 8. The UI records human DBA approval for suggested SQL checks but does not
    execute SQL.
 
-See `docs/ARCHITECTURE.md` for the diagram.
+See `docs/ARCHITECTURE.md` and the static diagram assets:
+
+- `assets/safety_first_agent_flow.svg`
+- `assets/security_boundary_diagram.svg`
+- `assets/incident_knowledge_loop.svg`
 
 ## Course concepts demonstrated
 
@@ -131,6 +135,18 @@ MCP/ADK integration, and SQL allowlist behavior. The local engine works without
 network access, while the ADK workflow adds optional AI reasoning when configured.
 The Agent Skill runbook keeps domain triage procedure separate from code, making
 the project easier to review, reuse, and extend.
+
+The project was developed using Visual Studio Code as the primary IDE and Google
+Antigravity IDE as an agentic development/review environment. This workflow
+matches the course theme of vibe coding while keeping the final implementation
+reviewable through code, tests, diagrams, and documentation.
+
+The implementation also includes broad targeted comments and docstrings across
+the app, source modules, and tests. The most important comments document
+safety-critical code paths: ADK tool filtering, MCP read-only behavior, privacy
+redaction, local memory, SQL allowlisting, and user-approved creation of custom
+samples. The comments explain design and behavior decisions rather than
+repeating simple syntax.
 
 ## Limitations and future work
 

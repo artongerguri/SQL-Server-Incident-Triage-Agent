@@ -4,8 +4,17 @@ This project uses a conservative agent design: deterministic local triage runs
 first, and the LLM-based ADK workflow is optional and gated by explicit user
 approval.
 
-Static diagram asset for the README, Kaggle writeup, or video:
-`assets/architecture.svg`.
+Static diagram assets for the README, Kaggle writeup, or video:
+
+- `assets/architecture.svg`
+- `assets/safety_first_agent_flow.svg`
+- `assets/security_boundary_diagram.svg`
+- `assets/incident_knowledge_loop.svg`
+
+Use `assets/safety_first_agent_flow.svg` as the main high-level diagram. Use
+`assets/security_boundary_diagram.svg` when explaining security and privacy.
+Use `assets/incident_knowledge_loop.svg` when explaining the optional custom
+sample workflow for unknown incidents.
 
 ```mermaid
 flowchart LR
@@ -41,6 +50,9 @@ flowchart LR
   configuration plus least-privilege database permissions.
 - Unknown incidents can be saved as custom local samples only after redaction,
   ADK/operator review, and explicit user approval.
+- Code comments document the design intent in safety-sensitive paths: ADK tool
+  filtering, MCP read-only boundaries, privacy redaction, SQL allowlisting,
+  local memory, and custom sample creation.
 
 ## Data flow
 

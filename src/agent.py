@@ -1,3 +1,10 @@
+"""Application-level incident orchestration.
+
+`IncidentTriageAgent` is the central coordinator used by the Streamlit UI and
+tests. It always runs deterministic local triage, then optionally adds local
+memory and ADK analysis only when the user has enabled those paths.
+"""
+
 from __future__ import annotations
 
 import hashlib
@@ -9,6 +16,8 @@ from src.security import scan_and_redact
 
 
 class IncidentTriageAgent:
+    """Coordinate local triage, privacy controls, memory, and optional ADK."""
+
     def __init__(
         self,
         use_adk: bool = True,
@@ -22,9 +31,16 @@ class IncidentTriageAgent:
         self.memory_store = memory_store
 
     def analyze(self, incident_text: str) -> dict:
+        """Return a complete incident report for UI rendering and tests."""
+        # Redaction happens first because every downstream optional feature
+        # should work from the safer representation whenever possible.
         privacy = scan_and_redact(incident_text)
+        # The local engine can inspect raw text because it runs in-process and
+        # never leaves the user's machine.
         local = build_local_analysis(incident_text)
 
+        # The fingerprint is based on redacted text so logs/memory can correlate
+        # repeated incidents without storing the original sensitive content.
         result = {
             "input_preview": privacy.redacted_text[:500],
             "incident_fingerprint": hashlib.sha256(
@@ -40,6 +56,8 @@ class IncidentTriageAgent:
             "similar_incidents": [],
         }
 
+        # Memory is opt-in and stores only redacted previews plus classification
+        # metadata. Similarity search is intentionally local and simple.
         if self.remember_incident:
             store = self.memory_store or IncidentMemoryStore()
             result["similar_incidents"] = store.find_similar(
@@ -48,6 +66,8 @@ class IncidentTriageAgent:
             )
             result["memory_id"] = store.remember(privacy.redacted_text, local)
 
+        # ADK is gated twice: a configured API key is not enough; the user must
+        # explicitly approve sharing the redacted incident.
         if self.use_adk and not self.external_ai_approved:
             result["adk_analysis"] = (
                 "ADK analysis skipped: external AI sharing was not approved."
@@ -63,6 +83,8 @@ class IncidentTriageAgent:
                     local,
                 )
             except Exception:
+                # The local report remains useful even when external AI fails.
+                # The UI should not crash during an incident demo or outage.
                 result["adk_analysis"] = (
                     "ADK analysis failed; the local triage result remains available."
                 )

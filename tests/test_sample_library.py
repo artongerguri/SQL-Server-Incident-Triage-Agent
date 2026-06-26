@@ -1,3 +1,5 @@
+"""Tests for sample incident listing, loading, and custom sample creation."""
+
 from pathlib import Path
 import shutil
 
@@ -10,6 +12,7 @@ from src.sample_library import (
 
 
 def test_adk_analysis_must_be_actionable_before_sample_save():
+    """Skipped or failed ADK text should not unlock custom sample saving."""
     assert is_actionable_adk_analysis("Likely cause: missing index") is True
     assert is_actionable_adk_analysis("ADK analysis failed; local result remains available.") is False
     assert is_actionable_adk_analysis("ADK analysis skipped because GOOGLE_API_KEY is not configured.") is False
@@ -17,11 +20,14 @@ def test_adk_analysis_must_be_actionable_before_sample_save():
 
 
 def test_custom_sample_is_saved_under_custom_directory():
+    """Custom samples should be saved safely below `sample_incidents/custom`."""
     root = Path(".test-tmp") / "sample_library"
     if root.exists():
         shutil.rmtree(root)
 
     try:
+        # Create one existing root-level sample so listing covers both standard
+        # and custom sample paths.
         (root / "existing.txt").parent.mkdir(parents=True, exist_ok=True)
         (root / "existing.txt").write_text("Existing sample", encoding="utf-8")
 
@@ -47,5 +53,6 @@ def test_custom_sample_is_saved_under_custom_directory():
         assert "custom/storage_incident.txt" in names
         assert load_sample_text(root, relative_name) == saved_text
     finally:
+        # Clean test output because `.test-tmp` is only a temporary workspace.
         if root.exists():
             shutil.rmtree(root)

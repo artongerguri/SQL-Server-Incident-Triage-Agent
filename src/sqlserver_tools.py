@@ -1,3 +1,10 @@
+"""Optional live SQL Server diagnostic tools.
+
+Live database access is disabled by default. When enabled for a controlled demo
+or non-production environment, callers can run only named static diagnostics
+through a read-only ODBC connection.
+"""
+
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
@@ -9,18 +16,23 @@ from src.security import assert_read_only_sql
 
 @dataclass(frozen=True)
 class SqlDiagnostic:
+    """Definition for one allowlisted SQL Server diagnostic query."""
+
     name: str
     description: str
     query: str
     required_permission: str
 
     def to_dict(self, include_query: bool = True) -> dict:
+        """Serialize the diagnostic, optionally hiding the raw SQL text."""
         value = asdict(self)
         if not include_query:
             value.pop("query")
         return value
 
 
+# Static diagnostics are safer than model-generated SQL because each query can be
+# reviewed, tested, permission-scoped, and validated against the allowlist.
 DIAGNOSTICS: dict[str, SqlDiagnostic] = {
     "database_health": SqlDiagnostic(
         name="database_health",
@@ -107,6 +119,8 @@ DIAGNOSTICS: dict[str, SqlDiagnostic] = {
 
 
 def list_diagnostics(include_queries: bool = False) -> list[dict]:
+    # ADK sees diagnostic names and descriptions by default; full SQL text is
+    # shown in the UI for human review, not used as model-executable input.
     return [
         diagnostic.to_dict(include_query=include_queries)
         for diagnostic in DIAGNOSTICS.values()
@@ -123,6 +137,8 @@ class SqlServerReadOnlyClient:
         query_timeout_seconds: int | None = None,
         max_rows: int = 100,
     ):
+        # Constructor parameters make the client testable; environment variables
+        # make it easy to configure for local demos without code changes.
         self.connection_string = connection_string or os.getenv(
             "SQLSERVER_CONNECTION_STRING", ""
         )
@@ -137,6 +153,9 @@ class SqlServerReadOnlyClient:
         self.max_rows = max(1, min(max_rows, 500))
 
     def run(self, diagnostic_name: str) -> dict[str, Any]:
+        """Run one named diagnostic and return bounded rows as dictionaries."""
+        # Live access must be explicitly enabled so a fresh clone cannot touch a
+        # database by accident.
         if not self.enabled:
             raise RuntimeError("Live SQL diagnostics are disabled.")
         if not self.connection_string:
@@ -145,6 +164,8 @@ class SqlServerReadOnlyClient:
             raise ValueError(f"Unknown SQL diagnostic: {diagnostic_name}")
 
         diagnostic = DIAGNOSTICS[diagnostic_name]
+        # Re-check the static template at execution time so future diagnostics
+        # cannot accidentally bypass the read-only policy.
         assert_read_only_sql(diagnostic.query)
 
         try:
@@ -159,10 +180,14 @@ class SqlServerReadOnlyClient:
             readonly=True,
         ) as connection:
             cursor = connection.cursor()
+            # Keep diagnostics responsive during incident triage and avoid long
+            # blocking waits on production-like systems.
             cursor.timeout = self.query_timeout_seconds
             cursor.execute("SET LOCK_TIMEOUT 3000;")
             cursor.execute(diagnostic.query)
             columns = [column[0] for column in cursor.description]
+            # Row limits prevent a diagnostic from returning huge result sets to
+            # the UI or an MCP client.
             for row in cursor.fetchmany(self.max_rows):
                 rows.append(dict(zip(columns, row)))
 

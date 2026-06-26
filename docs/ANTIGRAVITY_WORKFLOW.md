@@ -1,12 +1,11 @@
 # Antigravity Workflow
 
-You can use this project with both VS Code and Google Antigravity.
+You can use this project with both VS Code and Google Antigravity IDE.
 
-Only claim Antigravity in the Kaggle video if you actually open the project in
-Google Antigravity and use it for a real improvement. The project already
-demonstrates three capstone concepts through ADK, MCP, and security, so
-Antigravity is useful for the video story but is not required as the third
-concept.
+For the Kaggle video, mention Antigravity as a development/review tool only if
+you actually open the repository there and use it for a real review or focused
+refinement. The project already demonstrates the required capstone concepts
+through ADK, MCP, security, Agent Skills, and deployable GitHub documentation.
 
 ## Suggested workflow
 
@@ -46,5 +45,6 @@ clearer for judges.
 
 ## What to say in the demo
 
-> I built the first version in VS Code and then used Google Antigravity to review
-> and refine one focused part of the project before the final Kaggle submission.
+> I built and tested the project in VS Code, then used Google Antigravity IDE to
+> review and refine one focused part of the project before the final Kaggle
+> submission.

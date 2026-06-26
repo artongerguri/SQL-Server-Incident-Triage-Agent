@@ -22,8 +22,10 @@ repository and make sure it includes:
 - sample incident files
 - custom sample workflow documented if shown in the video
 - Agent Skill folder under `skills/`
+- visual diagrams under `assets/`
 - tests
 - architecture explanation
+- pertinent code comments for implementation, design, and behavior decisions
 - no real `.env` or API key committed
 
 ## Final code checks
@@ -47,8 +49,13 @@ Before publishing, confirm that these are not committed:
 
 - Problem and business value.
 - Why agents are useful for this workflow.
+- Build/development tools: VS Code, Google Antigravity IDE, Python, Streamlit,
+  Google ADK, FastMCP, SQLite, GitHub, and pytest.
 - ADK multi-agent architecture.
 - MCP tools and read-only design.
 - Agent Skill runbook and how it captures reusable triage procedure.
 - Security guardrails and human DBA approval.
+- Focused implementation comments in ADK, MCP, security, and SQL diagnostic
+  code paths.
+- Safety-first flow, security boundary, and incident knowledge loop diagrams.
 - Expanded SQL Server incident scenarios and limitations.

@@ -1,3 +1,10 @@
+"""Google ADK workflow for optional multi-agent incident review.
+
+The ADK path is deliberately optional. The local rule engine remains the primary
+fallback, while ADK adds a second layer of reasoning when a Gemini API key and
+explicit user approval are available.
+"""
+
 from __future__ import annotations
 
 import asyncio
@@ -18,17 +25,23 @@ from mcp import StdioServerParameters
 
 APP_NAME = "sql_server_incident_triage"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+# The shared system prompt keeps agent behavior consistent with the documented
+# DBA safety rules and avoids duplicating long instructions in Python code.
 BASE_INSTRUCTION = (PROJECT_ROOT / "prompts" / "system_prompt.md").read_text(
     encoding="utf-8"
 )
 
 
 def is_adk_configured() -> bool:
+    """Return whether the environment can attempt Gemini-backed ADK execution."""
     return bool(os.getenv("GOOGLE_API_KEY"))
 
 
 def build_adk_workflow(model: str | None = None) -> Workflow:
+    """Build the three-agent ADK workflow used for optional external analysis."""
     model_name = model or os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    # ADK agents receive only advisory MCP tools. The live SQL diagnostic tool is
+    # intentionally excluded so the model cannot trigger database access.
     mcp_tools = McpToolset(
         connection_params=StdioConnectionParams(
             server_params=StdioServerParameters(
@@ -45,6 +58,8 @@ def build_adk_workflow(model: str | None = None) -> Workflow:
         ],
     )
 
+    # The workflow separates diagnosis, safety review, and final coordination so
+    # operational guidance is checked before it reaches the user.
     triage_agent = Agent(
         name="sql_triage_specialist",
         model=model_name,
@@ -100,11 +115,15 @@ claim that a SQL command was executed.
 
 
 def run_adk_analysis(redacted_text: str, local_analysis: dict) -> str:
+    """Run the ADK workflow with redacted incident text and local context."""
     if not is_adk_configured():
         return "ADK analysis skipped because GOOGLE_API_KEY is not configured."
 
     async def run_workflow() -> str:
+        """Run ADK asynchronously while exposing a synchronous public wrapper."""
         workflow = build_adk_workflow()
+        # Toolsets hold subprocess/session resources. They are collected so they
+        # can be closed explicitly even if the workflow raises.
         mcp_toolsets = [
             tool
             for node in workflow.graph.nodes
@@ -113,6 +132,9 @@ def run_adk_analysis(redacted_text: str, local_analysis: dict) -> str:
         ]
         user_id = "local_dba"
         session_id = uuid4().hex
+        # The model receives redacted text plus deterministic local output. This
+        # grounds agent reasoning and makes the local engine the first source of
+        # truth rather than asking the model to classify from scratch.
         message = types.Content(
             role="user",
             parts=[
@@ -130,11 +152,14 @@ def run_adk_analysis(redacted_text: str, local_analysis: dict) -> str:
         final_text = ""
         try:
             async with InMemoryRunner(node=workflow, app_name=APP_NAME) as runner:
+                # ADK requires a session before events can be streamed.
                 await runner.session_service.create_session(
                     app_name=APP_NAME,
                     user_id=user_id,
                     session_id=session_id,
                 )
+                # Keep only the final response. Intermediate agent/tool events
+                # are useful for tracing but too noisy for the Streamlit report.
                 async for event in runner.run_async(
                     user_id=user_id,
                     session_id=session_id,

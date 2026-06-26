@@ -1,16 +1,29 @@
+<div align="center">
+
 # SQL Server Incident Triage Agent
 
-An AI-assisted incident triage application for SQL Server DBAs and system
-engineers. The agent turns noisy SQL Server errors, job failures, replication
-messages, TempDB pressure, availability group warnings, deadlock reports, and
-Query Store findings into a structured, safety-aware action plan.
+## Kaggle AI Agents: Intensive Vibe Coding Capstone Project
 
-This project is built for the **Kaggle AI Agents: Intensive Vibe Coding
-Capstone Project**. It demonstrates a practical business use case for AI agents:
-reducing the time required to understand database incidents while keeping human
-DBA approval in the loop for operational actions.
+**Author:** Arton Gërguri  
+**Competition / Course:** AI Agents: Intensive Vibe Coding Capstone Project  
+**Organizer:** Kaggle, in collaboration with Google  
+**Recommended Track:** Agents for Business  
+**Project Type:** AI-assisted SQL Server incident triage agent
 
-Recommended Kaggle track: **Agents for Business**.
+</div>
+
+## Project Overview
+
+SQL Server Incident Triage Agent is an AI-assisted incident triage application
+for SQL Server DBAs and system engineers. The agent turns noisy SQL Server
+errors, job failures, replication messages, TempDB pressure, availability group
+warnings, deadlock reports, and Query Store findings into a structured,
+safety-aware action plan.
+
+This project was developed as a capstone submission for the **Kaggle AI Agents:
+Intensive Vibe Coding Capstone Project**. It demonstrates a practical business
+use case for AI agents: reducing the time required to understand database
+incidents while keeping human DBA approval in the loop for operational actions.
 
 ## What It Does
 
@@ -77,6 +90,9 @@ This agent is designed to help with the first triage phase:
   classifications, and matched rule names.
 - **Optional live SQL diagnostics**: disabled by default and restricted to named
   allowlisted read-only operations.
+- **Focused implementation comments**: safety-critical code paths explain the
+  ADK tool boundary, privacy redaction, MCP read-only behavior, and SQL
+  allowlist decisions.
 - **Tests included**: rules, redaction, memory, MCP integration, ADK workflow
   structure, and SQL allowlist behavior.
 - **Expanded scenario library**: 14 anonymized SQL Server incident samples for
@@ -89,7 +105,12 @@ This agent is designed to help with the first triage phase:
 
 ## Architecture
 
-Static architecture asset: `assets/architecture.svg`
+Static architecture assets for the README, Kaggle writeup, and video:
+
+- `assets/architecture.svg`
+- `assets/safety_first_agent_flow.svg`
+- `assets/security_boundary_diagram.svg`
+- `assets/incident_knowledge_loop.svg`
 
 The design is local-first and safety-first:
 
@@ -138,6 +159,11 @@ flowchart LR
 | Agent tool use | ADK triage agent calling MCP tools |
 | Deployability | Public GitHub repository with setup instructions |
 
+Code comments are intentionally focused on design and behavior decisions rather
+than restating obvious Python syntax. The main commented areas are ADK tool
+filtering, MCP read-only boundaries, privacy redaction, unknown-incident sample
+creation, and SQL diagnostic allowlisting.
+
 ## Tech Stack
 
 - Python
@@ -149,6 +175,17 @@ flowchart LR
 - pyodbc for optional SQL Server diagnostics
 - pytest
 
+## Development Tools
+
+- **Visual Studio Code**: primary IDE for editing, running, testing, and
+  reviewing the Python project.
+- **Google Antigravity IDE**: agentic development environment used for project
+  review/refinement workflow and for demonstrating the course's vibe coding
+  development approach.
+- **GitHub**: public project repository and submission link.
+- **pytest**: automated test runner for rule matching, privacy, MCP, ADK
+  structure, memory, and SQL allowlist behavior.
+
 ## Project Structure
 
 ```text
@@ -156,7 +193,10 @@ sql-server-incident-triage-agent/
 |-- app.py
 |-- assets/
 |   |-- architecture.svg
-|   `-- cover.svg
+|   |-- cover.svg
+|   |-- incident_knowledge_loop.svg
+|   |-- safety_first_agent_flow.svg
+|   `-- security_boundary_diagram.svg
 |-- docs/
 |   |-- ARCHITECTURE.md
 |   |-- DEMO_VIDEO_SCRIPT.md
@@ -375,6 +415,9 @@ Supporting submission materials:
 - submission checklist: `docs/SUBMISSION_CHECKLIST.md`
 - cover image: `assets/cover.svg`
 - architecture image: `assets/architecture.svg`
+- safety-first flow image: `assets/safety_first_agent_flow.svg`
+- security boundary image: `assets/security_boundary_diagram.svg`
+- incident knowledge loop image: `assets/incident_knowledge_loop.svg`
 
 ## Security Notes
 

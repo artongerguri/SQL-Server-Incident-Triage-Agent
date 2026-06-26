@@ -1,3 +1,10 @@
+"""Privacy redaction and SQL safety validation.
+
+This module contains the app's main security guardrails. Redaction protects
+incident data before optional external AI use, while the SQL allowlist prevents
+the project from acting like a general-purpose query runner.
+"""
+
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
@@ -10,12 +17,16 @@ MAX_INCIDENT_CHARS = 20_000
 
 @dataclass(frozen=True)
 class PrivacyFinding:
+    """Count of one sensitive-looking pattern found during redaction."""
+
     kind: str
     count: int
 
 
 @dataclass(frozen=True)
 class PrivacyScan:
+    """Redacted text plus metadata needed for the UI privacy review panel."""
+
     redacted_text: str
     findings: list[PrivacyFinding]
     truncated: bool
@@ -28,6 +39,8 @@ class PrivacyScan:
         }
 
 
+# Patterns are deliberately conservative and explainable. They target common
+# values seen in SQL Server logs without trying to solve every possible PII case.
 _REDACTION_PATTERNS: list[tuple[str, Pattern[str], str]] = [
     (
         "connection secret",
@@ -83,6 +96,8 @@ _REDACTION_PATTERNS: list[tuple[str, Pattern[str], str]] = [
 
 
 def scan_and_redact(text: str, max_chars: int = MAX_INCIDENT_CHARS) -> PrivacyScan:
+    # Redaction is the privacy boundary before optional external AI. The original
+    # incident text is never required by ADK or by the local memory store.
     if not isinstance(text, str):
         raise TypeError("Incident input must be text.")
     if max_chars < 1:
@@ -104,10 +119,14 @@ def scan_and_redact(text: str, max_chars: int = MAX_INCIDENT_CHARS) -> PrivacySc
     )
 
 
+# Block write/destructive SQL verbs anywhere in the template before considering
+# allowlisted read-only forms.
 _FORBIDDEN_SQL = re.compile(
     r"(?i)\b(ALTER|BACKUP|CREATE|DELETE|DROP|INSERT|INTO|KILL|MERGE|RESTORE|"
     r"SHRINKDATABASE|SHRINKFILE|TRUNCATE|UPDATE)\b"
 )
+# EXEC is restricted because stored procedures can do anything. Only known
+# read-only diagnostic procedures are accepted.
 _ALLOWED_EXEC = {
     "xp_readerrorlog",
     "master.dbo.xp_readerrorlog",
@@ -115,11 +134,14 @@ _ALLOWED_EXEC = {
     "sp_helppublication",
     "sp_helpsubscription",
 }
+# DBCC is also restricted to diagnostic commands used by this project.
 _ALLOWED_DBCC = {"CHECKDB", "OPENTRAN", "SQLPERF"}
 
 
 def is_read_only_sql(sql: str) -> bool:
     """Return whether a SQL template is allowed for manual/read-only diagnostics."""
+    # Use an allowlist instead of trying to sanitize user-provided SQL. This app
+    # exposes static templates for DBA review, not a general query runner.
     normalized = re.sub(r"--.*?$|/\*.*?\*/", " ", sql, flags=re.MULTILINE | re.DOTALL)
     normalized = re.sub(r"\s+", " ", normalized).strip().rstrip(";")
     if not normalized or _FORBIDDEN_SQL.search(normalized):
@@ -138,5 +160,6 @@ def is_read_only_sql(sql: str) -> bool:
 
 
 def assert_read_only_sql(sql: str) -> None:
+    """Raise when a SQL diagnostic template violates the allowlist."""
     if not is_read_only_sql(sql):
         raise ValueError("Only allowlisted read-only SQL diagnostics are permitted.")

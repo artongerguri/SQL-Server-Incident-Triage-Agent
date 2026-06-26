@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Safety-First Agent Flow</title>
+  <desc id="desc">A professional flow diagram showing incident input, privacy guard, local triage, optional ADK multi-agent review, read-only MCP tools, and DBA-approved output.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e0f2fe"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#334155"/>
+    </marker>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.16"/>
+    </filter>
+    <style>
+      .title { font-family: Segoe UI, Arial, sans-serif; font-size: 48px; font-weight: 800; fill: #0f172a; }
+      .subtitle { font-family: Segoe UI, Arial, sans-serif; font-size: 24px; fill: #475569; }
+      .box { filter: url(#shadow); rx: 22; }
+      .label { font-family: Segoe UI, Arial, sans-serif; font-size: 24px; font-weight: 800; fill: #0f172a; }
+      .small { font-family: Segoe UI, Arial, sans-serif; font-size: 17px; fill: #475569; }
+      .note { font-family: Segoe UI, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #1d4ed8; }
+      .line { stroke: #334155; stroke-width: 5; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #2563eb; stroke-width: 4; fill: none; stroke-dasharray: 10 10; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1000" fill="url(#bg)"/>
+  <text class="title" x="80" y="88">Safety-First Agent Flow</text>
+  <text class="subtitle" x="80" y="128">Local deterministic triage runs first. External AI and database access stay behind explicit controls.</text>
+
+  <rect class="box" x="80" y="250" width="250" height="130" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  <text class="label" x="120" y="302">Incident Input</text>
+  <text class="small" x="120" y="336">SQL logs, job history,</text>
+  <text class="small" x="120" y="362">DMV output, samples</text>
+
+  <rect class="box" x="410" y="250" width="270" height="130" fill="#ccfbf1" stroke="#14b8a6" stroke-width="3"/>
+  <text class="label" x="455" y="302">Privacy Guard</text>
+  <text class="small" x="455" y="336">Redacts users, hosts,</text>
+  <text class="small" x="455" y="362">databases, secrets</text>
+
+  <rect class="box" x="760" y="170" width="300" height="130" fill="#dbeafe" stroke="#3b82f6" stroke-width="3"/>
+  <text class="label" x="810" y="222">Local Rule Engine</text>
+  <text class="small" x="810" y="256">Deterministic fallback</text>
+  <text class="small" x="810" y="282">always available</text>
+
+  <rect class="box" x="760" y="430" width="300" height="160" fill="#ede9fe" stroke="#8b5cf6" stroke-width="3"/>
+  <text class="label" x="817" y="482">ADK Workflow</text>
+  <text class="small" x="817" y="518">Triage specialist</text>
+  <text class="small" x="817" y="544">Safety reviewer</text>
+  <text class="small" x="817" y="570">Coordinator</text>
+
+  <rect class="box" x="1140" y="430" width="300" height="160" fill="#fef3c7" stroke="#f59e0b" stroke-width="3"/>
+  <text class="label" x="1190" y="482">FastMCP Tools</text>
+  <text class="small" x="1190" y="518">analyze_incident</text>
+  <text class="small" x="1190" y="544">list_sql_diagnostics</text>
+  <text class="small" x="1190" y="570">search_memory</text>
+
+  <rect class="box" x="1140" y="170" width="300" height="130" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  <text class="label" x="1185" y="222">Structured Report</text>
+  <text class="small" x="1185" y="256">Severity, cause, checks,</text>
+  <text class="small" x="1185" y="282">recommended actions</text>
+
+  <rect class="box" x="1520" y="250" width="230" height="130" fill="#dcfce7" stroke="#22c55e" stroke-width="3"/>
+  <text class="label" x="1562" y="302">DBA Review</text>
+  <text class="small" x="1562" y="336">Human approval</text>
+  <text class="small" x="1562" y="362">before action</text>
+
+  <path class="line" d="M330 315 H410"/>
+  <path class="line" d="M680 300 C710 260, 730 235, 760 235"/>
+  <path class="line" d="M1060 235 H1140"/>
+  <path class="line" d="M1440 235 C1485 245, 1495 285, 1520 315"/>
+  <path class="dash" d="M680 350 C720 435, 730 510, 760 510"/>
+  <path class="line" d="M1060 510 H1140"/>
+  <path class="dash" d="M910 430 V300"/>
+  <path class="dash" d="M1290 430 V300"/>
+
+  <text class="note" x="705" y="402">Opt-in only</text>
+  <text class="note" x="1110" y="632">Read-only named tools</text>
+
+  <rect x="80" y="760" width="1670" height="120" rx="22" fill="#0f172a"/>
+  <text x="120" y="812" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800" fill="#f8fafc">Design rule</text>
+  <text x="120" y="850" font-family="Segoe UI, Arial, sans-serif" font-size="21" fill="#cbd5e1">The app can classify incidents and suggest verification steps, but it does not execute SQL or send raw incident data to external AI.</text>
+</svg>

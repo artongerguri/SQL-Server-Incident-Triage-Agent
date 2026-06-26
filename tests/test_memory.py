@@ -1,8 +1,11 @@
+"""Tests for redacted SQLite incident memory."""
+
 from src.memory import IncidentMemoryStore
 from src.rules import build_local_analysis
 
 
 def test_memory_stores_only_redacted_incident():
+    """Memory should persist the provided redacted preview, not raw secrets."""
     store = IncidentMemoryStore(":memory:")
     redacted = "Database: [REDACTED_DATABASE] backup failed disk full"
     analysis = build_local_analysis(redacted)
@@ -16,6 +19,7 @@ def test_memory_stores_only_redacted_incident():
 
 
 def test_memory_finds_similar_incidents():
+    """Similarity search should return related incidents from the same category."""
     store = IncidentMemoryStore(":memory:")
     first = "backup failed because disk full on redacted volume"
     analysis = build_local_analysis(first)

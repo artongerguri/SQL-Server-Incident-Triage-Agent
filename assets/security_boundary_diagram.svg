@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Security Boundary Diagram</title>
+  <desc id="desc">Security boundaries for local data, redaction, optional ADK use, MCP tools, and human DBA approval.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#334155"/>
+    </marker>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.15"/>
+    </filter>
+    <style>
+      .title { font-family: Segoe UI, Arial, sans-serif; font-size: 48px; font-weight: 800; fill: #0f172a; }
+      .subtitle { font-family: Segoe UI, Arial, sans-serif; font-size: 24px; fill: #475569; }
+      .zone-title { font-family: Segoe UI, Arial, sans-serif; font-size: 26px; font-weight: 800; fill: #0f172a; }
+      .box-title { font-family: Segoe UI, Arial, sans-serif; font-size: 23px; font-weight: 800; fill: #0f172a; }
+      .text { font-family: Segoe UI, Arial, sans-serif; font-size: 18px; fill: #475569; }
+      .box { filter: url(#shadow); }
+      .line { stroke: #334155; stroke-width: 5; fill: none; marker-end: url(#arrow); }
+      .blocked { stroke: #dc2626; stroke-width: 5; fill: none; stroke-dasharray: 10 10; }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1000" fill="#f8fafc"/>
+  <text class="title" x="80" y="88">Security Boundary Diagram</text>
+  <text class="subtitle" x="80" y="128">Sensitive data, external AI, MCP tools, and SQL diagnostics are separated by explicit guardrails.</text>
+
+  <rect x="70" y="190" width="500" height="620" rx="30" fill="#ecfeff" stroke="#06b6d4" stroke-width="4"/>
+  <text class="zone-title" x="110" y="240">Local Private Zone</text>
+
+  <rect class="box" x="120" y="290" width="390" height="115" rx="18" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  <text class="box-title" x="155" y="335">Original Incident Text</text>
+  <text class="text" x="155" y="368">May contain database names,</text>
+  <text class="text" x="155" y="392">hosts, accounts, IPs, paths</text>
+
+  <rect class="box" x="120" y="465" width="390" height="115" rx="18" fill="#ccfbf1" stroke="#14b8a6" stroke-width="3"/>
+  <text class="box-title" x="155" y="510">Privacy Redaction</text>
+  <text class="text" x="155" y="543">Truncates input and replaces</text>
+  <text class="text" x="155" y="567">sensitive-looking values</text>
+
+  <rect class="box" x="120" y="640" width="390" height="115" rx="18" fill="#dbeafe" stroke="#3b82f6" stroke-width="3"/>
+  <text class="box-title" x="155" y="685">Local Triage + Memory</text>
+  <text class="text" x="155" y="718">Rules and SQLite store only</text>
+  <text class="text" x="155" y="742">redacted previews</text>
+
+  <rect x="650" y="190" width="500" height="620" rx="30" fill="#fff7ed" stroke="#f97316" stroke-width="4"/>
+  <text class="zone-title" x="690" y="240">Controlled Tool Zone</text>
+
+  <rect class="box" x="700" y="325" width="390" height="130" rx="18" fill="#fef3c7" stroke="#f59e0b" stroke-width="3"/>
+  <text class="box-title" x="735" y="370">FastMCP Server</text>
+  <text class="text" x="735" y="403">Named tools, structured output,</text>
+  <text class="text" x="735" y="427">read-only annotations</text>
+
+  <rect class="box" x="700" y="540" width="390" height="130" rx="18" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  <text class="box-title" x="735" y="585">SQL Diagnostic Client</text>
+  <text class="text" x="735" y="618">Disabled by default, static</text>
+  <text class="text" x="735" y="642">allowlisted queries only</text>
+
+  <rect x="1230" y="190" width="500" height="620" rx="30" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="4"/>
+  <text class="zone-title" x="1270" y="240">External / Human Zone</text>
+
+  <rect class="box" x="1280" y="300" width="390" height="130" rx="18" fill="#ede9fe" stroke="#8b5cf6" stroke-width="3"/>
+  <text class="box-title" x="1315" y="345">Google ADK / Gemini</text>
+  <text class="text" x="1315" y="378">Receives redacted text only</text>
+  <text class="text" x="1315" y="402">after explicit approval</text>
+
+  <rect class="box" x="1280" y="555" width="390" height="130" rx="18" fill="#dcfce7" stroke="#22c55e" stroke-width="3"/>
+  <text class="box-title" x="1315" y="600">DBA Approval</text>
+  <text class="text" x="1315" y="633">Reviews SQL checks and</text>
+  <text class="text" x="1315" y="657">operational actions</text>
+
+  <path class="line" d="M315 405 V465"/>
+  <path class="line" d="M315 580 V640"/>
+  <path class="line" d="M510 522 C590 500, 635 420, 700 390"/>
+  <path class="line" d="M1090 390 C1160 370, 1210 365, 1280 365"/>
+  <path class="line" d="M1090 605 C1160 610, 1210 620, 1280 620"/>
+  <path class="line" d="M315 755 C620 900, 1130 890, 1475 685"/>
+
+  <path class="blocked" d="M510 330 C800 160, 1180 165, 1280 325"/>
+  <text x="735" y="175" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="800" fill="#dc2626">Raw incident text never goes directly to external AI</text>
+
+  <rect x="80" y="865" width="1650" height="70" rx="18" fill="#0f172a"/>
+  <text x="120" y="908" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800" fill="#f8fafc">Security claim:</text>
+  <text x="285" y="908" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#cbd5e1">No API keys or passwords in source code. External AI, memory, and live SQL diagnostics are opt-in.</text>
+</svg>
