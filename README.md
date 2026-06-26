@@ -112,6 +112,18 @@ Static architecture assets for the README, Kaggle writeup, and video:
 - `assets/security_boundary_diagram.svg`
 - `assets/incident_knowledge_loop.svg`
 
+### Safety-First Agent Flow
+
+![Safety-First Agent Flow](assets/safety_first_agent_flow.svg)
+
+### Security Boundary Diagram
+
+![Security Boundary Diagram](assets/security_boundary_diagram.svg)
+
+### Incident Knowledge Loop
+
+![Incident Knowledge Loop](assets/incident_knowledge_loop.svg)
+
 The design is local-first and safety-first:
 
 1. The Streamlit app receives the incident text.
