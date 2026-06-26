@@ -2,115 +2,178 @@
 
 Target length: 4:30 to 5:00 minutes.
 
-## 0:00 - Introduction
+Use this as a read-aloud script. Keep the pace calm and do not spend too long on
+any single screen. Avoid showing `.env`, API keys, passwords, or connection
+strings.
 
-Hello, this is my SQL Server Incident Triage Agent for the Kaggle AI Agents Vibe
-Coding Capstone Project. It is designed for DBAs and system engineers who need
-to analyze SQL Server incidents quickly and safely.
+## 0:00 - 0:15 | Personal Introduction
 
-## 0:20 - Problem
+Show on screen: project README title or cover image.
 
-SQL Server incidents often arrive as long logs, failed SQL Agent job histories,
-TempDB errors, database integrity warnings, deadlock errors, replication
-messages, availability group alerts, or Query Store findings. During a
-production incident, the DBA needs to classify the problem, understand severity,
-collect evidence, and avoid unsafe actions.
+Say:
 
-## 0:50 - Why agents
+Hello, my name is Arton Gerguri. This is my submission for the Kaggle AI Agents:
+Intensive Vibe Coding Capstone Project. The project is called SQL Server
+Incident Triage Agent, and it is designed for DBAs and system engineers.
 
-This project uses agents because incident response has multiple roles. One agent
-performs technical triage, one reviews safety and privacy risk, and one combines
-the result into a clear DBA action plan. This separation helps avoid unsupported
-claims and unsafe recommendations.
+## 0:15 - 0:45 | Problem Statement
 
-## 1:20 - Architecture
+Show on screen: README overview or `assets/how_to_use_app.svg`.
 
-Show `assets/how_to_use_app.svg` first, then `assets/safety_first_agent_flow.svg`
-or the architecture section in the README.
+Say:
 
-Explain the user workflow:
+SQL Server incidents often arrive as long and noisy logs. They can come from
+SSMS, SQL Agent Job History, SQL Server Error Log, monitoring tools, or
+application logs. During a production issue, a DBA has to quickly understand the
+category, severity, likely cause, and safe verification steps.
 
-- A real DBA copies an incident from SSMS, SQL Agent history, SQL Server Error
-  Log, monitoring, or application logs.
-- The user pastes that real text into Incident input.
-- Load sample incident is only for demo/testing, not for normal real usage.
-- The user clicks Analyze Incident and reviews the result.
+This is important because a wrong action, such as shrinking files, killing
+sessions, forcing failover, or changing replication too early, can make the
+incident worse. The goal of this agent is to support the first triage phase in a
+safe and consistent way.
 
-Then explain the agent architecture:
+## 0:45 - 1:10 | How the User Uses the App
 
-- Streamlit receives the incident.
-- A privacy guard redacts sensitive values.
-- A local rule engine always runs first.
-- With explicit approval, Google ADK runs the multi-agent workflow.
-- The triage agent uses a local FastMCP server with read-only tools.
-- The app records human DBA approval but does not execute SQL.
+Show on screen: `assets/how_to_use_app.svg`.
 
-## 2:00 - Demo 1: backup failure
+Say:
 
-Load `backup_failed_disk_full.txt`.
+The normal user workflow is simple. A DBA copies the real incident message from
+SSMS, SQL Agent history, SQL Server logs, monitoring, or application logs. Then
+the user pastes that text into the Incident input field and clicks Analyze
+Incident.
 
-Explain that this sample simulates what a DBA would normally paste from SQL
-Agent job history or an error log. Show that the agent detects Backup / Storage
-with Critical severity. Point out the likely cause, verification steps, and
-read-only SQL checks.
+The Load sample incident option is only for demos and testing. In real use, the
+user pastes the actual incident text. The application then returns a structured
+triage result, but it does not execute SQL automatically.
 
-## 2:35 - Demo 2: TempDB or database integrity
+## 1:10 - 1:45 | Why Agents
 
-Load `tempdb_space_pressure.txt` or `database_suspect_page_checksum.txt`.
+Show on screen: `assets/safety_first_agent_flow.svg`.
 
-Show that the agent recognizes a high-impact database incident and recommends
-verification before operational action. Emphasize that the app suggests checks
-but does not execute SQL.
+Say:
 
-## 3:10 - Demo 3: deadlock or availability group
+I used agents because incident response has multiple responsibilities. In this
+project, the ADK workflow separates those responsibilities into three roles.
 
-Use either `deadlock_detected.txt` or `always_on_not_synchronizing.txt`.
+The SQL triage specialist analyzes the incident and uses read-only MCP tools.
+The safety reviewer checks the advice for privacy risk, unsafe actions, and
+unsupported claims. The incident coordinator combines the diagnosis and safety
+review into one DBA-facing action plan.
 
-For deadlock, show the category as Concurrency and the recommendation to inspect
-the deadlock graph and lock order. For availability groups, show the High
-Availability category, synchronization health, and failover caution.
+This makes the agent more useful than a single prompt because it separates
+technical triage from safety review.
 
-## 3:45 - Security features
+## 1:45 - 2:20 | Architecture
 
-Show `assets/security_boundary_diagram.svg`, the privacy review panel, and the
-external AI approval control. If no Gemini API key is configured, explain that
-the external AI option remains disabled and the local triage engine still works.
+Show on screen: README architecture section or `assets/safety_first_agent_flow.svg`.
 
-Explain:
+Say:
 
-- external AI is opt-in
-- redaction runs before ADK
-- live SQL diagnostics are disabled by default
-- the UI does not execute SQL
-- SQL checks require DBA review
+The architecture is local-first and safety-first. Streamlit receives the
+incident text. A privacy guard redacts sensitive-looking values such as users,
+hosts, database names, IP addresses, paths, and secrets. Then the local rule
+engine always runs first, so the application works even without an API key.
 
-If time allows, briefly show `assets/incident_knowledge_loop.svg` and explain
-that unknown incidents can become reusable redacted samples only after ADK
-guidance and human approval.
+If the user explicitly approves external AI sharing and a Google API key is
+configured, Google ADK can run the multi-agent workflow. The triage agent uses a
+local FastMCP server with read-only tools. The UI displays suggested SQL checks
+for DBA review, but the application itself does not execute SQL.
 
-## 4:20 - Build and course concepts
+## 2:20 - 3:00 | Demo 1: Backup Failure
 
-Mention the key concepts demonstrated:
+Show on screen: Streamlit app.
 
-- The project was developed and reviewed using VS Code and Google Antigravity
-  IDE as coding/development tools.
-- Google ADK multi-agent workflow
-- MCP server
-- Agent Skill runbook for SQL Server incident triage
-- security guardrails
-- focused code comments around ADK tool filtering, privacy, MCP read-only
-  behavior, and SQL allowlisting
-- 14 SQL Server incident scenarios
-- optional user-approved custom sample creation for unknown incidents when ADK
-  is configured
-- agent tool use
-- public GitHub setup instructions
+Actions:
 
-If you show Antigravity in the video, briefly show the project opened there or
-state the specific review/refinement task you used it for.
+1. Load `backup_failed_disk_full.txt`.
+2. Click **Analyze Incident**.
+3. Show severity, category, likely cause, verification steps, and SQL checks.
 
-## 4:50 - Conclusion
+Say:
 
-This project demonstrates a practical business agent that reduces SQL Server
-incident triage time, improves consistency, and keeps human DBA approval in the
-loop for operational actions.
+For the first demo, I am using a sample incident that simulates a failed SQL
+Agent backup job. In real usage, this text would usually be copied from SQL
+Agent history or the SQL Server error log.
+
+The agent classifies this as Backup / Storage with Critical severity. It
+identifies insufficient disk space as the likely cause and suggests safe
+verification steps, such as checking backup destination space, SQL Agent job
+history, and related error log messages.
+
+The SQL checks shown here are read-only suggestions for a DBA to review. The app
+does not run them.
+
+## 3:00 - 3:30 | Demo 2: TempDB or Integrity Incident
+
+Show on screen: Streamlit app.
+
+Actions:
+
+1. Load `tempdb_space_pressure.txt` or `database_suspect_page_checksum.txt`.
+2. Click **Analyze Incident**.
+3. Show the category, severity, and recommended actions.
+
+Say:
+
+For the second demo, I am showing another high-impact SQL Server incident. The
+agent recognizes the incident category and recommends verification before
+operational action.
+
+This is important because database incidents often require caution. The tool
+helps organize the first response, but final actions still require human DBA
+judgment and approval.
+
+## 3:30 - 4:05 | Security Features
+
+Show on screen: `assets/security_boundary_diagram.svg`, then the app privacy
+review panel.
+
+Say:
+
+Security is a core part of the design. External AI is opt-in. Redaction runs
+before optional ADK analysis. The original incident text stays local unless the
+user explicitly approves sharing redacted text.
+
+Live SQL diagnostics are disabled by default. The MCP server exposes named
+read-only tools and does not accept arbitrary SQL. The UI also does not execute
+SQL. It only displays checks for DBA review.
+
+## 4:05 - 4:30 | Build and Course Concepts
+
+Show on screen: VS Code, Google Antigravity IDE, or README project structure.
+
+Say:
+
+I built and tested the project using Python, Streamlit, Google ADK, FastMCP,
+SQLite, and pytest. I used VS Code as the primary development environment and
+Google Antigravity IDE as an agentic review and refinement tool.
+
+The project demonstrates multiple course concepts: an ADK multi-agent workflow,
+an MCP server, security guardrails, Agent Skill runbooks, agent tool use,
+deployable GitHub documentation, focused code comments, tests, and visual
+architecture diagrams.
+
+## 4:30 - 4:50 | Optional Learning Loop
+
+Show on screen: `assets/incident_knowledge_loop.svg`.
+
+Say:
+
+The project also includes a controlled learning loop for unknown incidents. If
+no local rule matches, and ADK guidance is available, the user can save a
+redacted custom sample only after human review and approval.
+
+This does not automatically create a new rule. It creates reusable local
+evidence that can later be reviewed and converted into a deterministic rule with
+tests.
+
+## 4:50 - 5:00 | Conclusion
+
+Show on screen: GitHub repository or final app result.
+
+Say:
+
+In summary, this project is a practical business agent that helps reduce SQL
+Server incident triage time, improves consistency, and keeps human DBA approval
+in the loop for operational actions.
