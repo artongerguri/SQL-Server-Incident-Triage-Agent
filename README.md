@@ -4,7 +4,7 @@
 
 ## Kaggle AI Agents: Intensive Vibe Coding Capstone Project
 
-**Author:** Arton Gërguri  
+**Author:** Arton Gerguri  
 **Competition / Course:** AI Agents: Intensive Vibe Coding Capstone Project  
 **Organizer:** Kaggle, in collaboration with Google  
 **Recommended Track:** Agents for Business  
@@ -111,6 +111,11 @@ Static architecture assets for the README, Kaggle writeup, and video:
 - `assets/safety_first_agent_flow.svg`
 - `assets/security_boundary_diagram.svg`
 - `assets/incident_knowledge_loop.svg`
+- `assets/how_to_use_app.svg`
+
+### How to Use the Application
+
+![How to Use the Application](assets/how_to_use_app.svg)
 
 ### Safety-First Agent Flow
 
@@ -206,6 +211,7 @@ sql-server-incident-triage-agent/
 |-- assets/
 |   |-- architecture.svg
 |   |-- cover.svg
+|   |-- how_to_use_app.svg
 |   |-- incident_knowledge_loop.svg
 |   |-- safety_first_agent_flow.svg
 |   `-- security_boundary_diagram.svg
@@ -305,20 +311,41 @@ rule-based triage engine.
 
 ## Run The App
 
+If your virtual environment is active:
+
 ```bash
 streamlit run app.py
 ```
 
+If PowerShell does not recognize `streamlit`, run it through Python from the
+virtual environment:
+
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run app.py
+```
+
+Or activate the environment first, then run Streamlit:
+
+```powershell
+.\.venv\Scripts\activate
+python -m streamlit run app.py
+```
+
 Typical workflow:
 
-1. Paste an incident message or load a sample incident.
-2. Choose whether to use the ADK workflow.
-3. Optionally approve sharing redacted text with Gemini.
-4. Optionally store the redacted incident in local memory.
-5. Click **Analyze Incident**.
-6. Review severity, category, likely cause, verification steps, privacy findings,
-   ADK analysis, and SQL checks.
-7. Record DBA approval for reviewed SQL checks.
+1. Copy an incident message from SSMS, SQL Agent Job History, SQL Server Error
+   Log, monitoring, or application logs.
+2. Paste the real incident text into **Incident input**.
+3. Use **Load sample incident** only for demos, testing, or the Kaggle video.
+4. Choose whether to use the ADK workflow.
+5. Optionally approve sharing redacted text with Gemini.
+6. Optionally store the redacted incident in local memory.
+7. Click **Analyze Incident**.
+8. Review severity, category, likely cause, verification steps, privacy
+   findings, ADK analysis, and SQL checks.
+9. Record DBA approval for reviewed SQL checks.
+10. If needed, manually run reviewed SQL checks in SSMS or another trusted DBA
+    tool. This app does not execute them.
 
 ## Learning From Unknown Incidents
 
@@ -427,6 +454,7 @@ Supporting submission materials:
 - submission checklist: `docs/SUBMISSION_CHECKLIST.md`
 - cover image: `assets/cover.svg`
 - architecture image: `assets/architecture.svg`
+- how-to-use image: `assets/how_to_use_app.svg`
 - safety-first flow image: `assets/safety_first_agent_flow.svg`
 - security boundary image: `assets/security_boundary_diagram.svg`
 - incident knowledge loop image: `assets/incident_knowledge_loop.svg`

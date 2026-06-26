@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">How to Use the SQL Server Incident Triage Agent</title>
+  <desc id="desc">Workflow diagram showing how a DBA copies an incident from SQL Server tools, pastes it into the app, analyzes it, reviews privacy and safe checks, and manually acts after approval.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eff6ff"/>
+      <stop offset="55%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#ecfeff"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#334155"/>
+    </marker>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#0f172a" flood-opacity="0.16"/>
+    </filter>
+    <style>
+      .title { font-family: Segoe UI, Arial, sans-serif; font-size: 48px; font-weight: 800; fill: #0f172a; }
+      .subtitle { font-family: Segoe UI, Arial, sans-serif; font-size: 24px; fill: #475569; }
+      .step { filter: url(#shadow); }
+      .number { font-family: Segoe UI, Arial, sans-serif; font-size: 28px; font-weight: 900; fill: #ffffff; }
+      .label { font-family: Segoe UI, Arial, sans-serif; font-size: 25px; font-weight: 800; fill: #0f172a; }
+      .small { font-family: Segoe UI, Arial, sans-serif; font-size: 18px; fill: #475569; }
+      .line { stroke: #334155; stroke-width: 5; fill: none; marker-end: url(#arrow); }
+      .soft-line { stroke: #0ea5e9; stroke-width: 4; fill: none; stroke-dasharray: 10 10; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1000" fill="url(#bg)"/>
+  <text class="title" x="80" y="88">How to Use the Application</text>
+  <text class="subtitle" x="80" y="128">A DBA copies a real incident message, pastes it into the app, and reviews a safe triage plan before taking action.</text>
+
+  <rect class="step" x="95" y="245" width="310" height="170" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  <circle cx="145" cy="295" r="30" fill="#2563eb"/>
+  <text class="number" x="137" y="305">1</text>
+  <text class="label" x="190" y="295">Collect Incident</text>
+  <text class="small" x="135" y="340">Copy the error from SSMS,</text>
+  <text class="small" x="135" y="368">SQL Agent history, error log,</text>
+  <text class="small" x="135" y="396">monitoring, or application logs.</text>
+
+  <rect class="step" x="515" y="245" width="310" height="170" rx="24" fill="#dbeafe" stroke="#3b82f6" stroke-width="3"/>
+  <circle cx="565" cy="295" r="30" fill="#2563eb"/>
+  <text class="number" x="557" y="305">2</text>
+  <text class="label" x="610" y="295">Paste Input</text>
+  <text class="small" x="555" y="340">Paste the real incident into</text>
+  <text class="small" x="555" y="368">Incident input. Samples are only</text>
+  <text class="small" x="555" y="396">for demos and testing.</text>
+
+  <rect class="step" x="935" y="245" width="310" height="170" rx="24" fill="#ccfbf1" stroke="#14b8a6" stroke-width="3"/>
+  <circle cx="985" cy="295" r="30" fill="#0f766e"/>
+  <text class="number" x="977" y="305">3</text>
+  <text class="label" x="1030" y="295">Analyze</text>
+  <text class="small" x="975" y="340">Click Analyze Incident.</text>
+  <text class="small" x="975" y="368">The local engine runs first</text>
+  <text class="small" x="975" y="396">and redaction is applied.</text>
+
+  <rect class="step" x="1355" y="245" width="310" height="170" rx="24" fill="#ede9fe" stroke="#8b5cf6" stroke-width="3"/>
+  <circle cx="1405" cy="295" r="30" fill="#7c3aed"/>
+  <text class="number" x="1397" y="305">4</text>
+  <text class="label" x="1450" y="295">Review Output</text>
+  <text class="small" x="1395" y="340">Read severity, category,</text>
+  <text class="small" x="1395" y="368">likely cause, verification</text>
+  <text class="small" x="1395" y="396">steps, and privacy review.</text>
+
+  <rect class="step" x="365" y="620" width="350" height="180" rx="24" fill="#fef3c7" stroke="#f59e0b" stroke-width="3"/>
+  <circle cx="415" cy="672" r="30" fill="#d97706"/>
+  <text class="number" x="407" y="682">5</text>
+  <text class="label" x="460" y="672">DBA Approves Checks</text>
+  <text class="small" x="405" y="718">Suggested SQL is displayed</text>
+  <text class="small" x="405" y="746">as read-only checks for human</text>
+  <text class="small" x="405" y="774">review, not automatic execution.</text>
+
+  <rect class="step" x="1085" y="620" width="350" height="180" rx="24" fill="#dcfce7" stroke="#22c55e" stroke-width="3"/>
+  <circle cx="1135" cy="672" r="30" fill="#16a34a"/>
+  <text class="number" x="1127" y="682">6</text>
+  <text class="label" x="1180" y="672">Manual Action</text>
+  <text class="small" x="1125" y="718">The DBA decides what to run</text>
+  <text class="small" x="1125" y="746">in SSMS or operations tooling</text>
+  <text class="small" x="1125" y="774">after normal approval.</text>
+
+  <path class="line" d="M405 330 H515"/>
+  <path class="line" d="M825 330 H935"/>
+  <path class="line" d="M1245 330 H1355"/>
+  <path class="line" d="M1510 415 C1510 540, 1430 620, 1435 690"/>
+  <path class="line" d="M1085 710 H715"/>
+
+  <rect x="710" y="505" width="390" height="90" rx="18" fill="#0f172a"/>
+  <text x="750" y="542" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800" fill="#f8fafc">Important distinction</text>
+  <text x="750" y="575" font-family="Segoe UI, Arial, sans-serif" font-size="19" fill="#cbd5e1">Load sample incident is for demos; real users paste their own incident text.</text>
+  <path class="soft-line" d="M670 415 C700 455, 730 485, 785 505"/>
+
+  <rect x="80" y="880" width="1640" height="70" rx="20" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  <text x="120" y="923" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800" fill="#0f172a">Safety rule:</text>
+  <text x="250" y="923" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#475569">The app assists triage. It does not execute SQL, change databases, or replace DBA judgment.</text>
+</svg>

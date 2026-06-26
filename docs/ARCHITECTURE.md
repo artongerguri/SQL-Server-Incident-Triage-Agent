@@ -7,14 +7,16 @@ approval.
 Static diagram assets for the README, Kaggle writeup, or video:
 
 - `assets/architecture.svg`
+- `assets/how_to_use_app.svg`
 - `assets/safety_first_agent_flow.svg`
 - `assets/security_boundary_diagram.svg`
 - `assets/incident_knowledge_loop.svg`
 
-Use `assets/safety_first_agent_flow.svg` as the main high-level diagram. Use
-`assets/security_boundary_diagram.svg` when explaining security and privacy.
-Use `assets/incident_knowledge_loop.svg` when explaining the optional custom
-sample workflow for unknown incidents.
+Use `assets/how_to_use_app.svg` to explain the real user workflow. Use
+`assets/safety_first_agent_flow.svg` as the main high-level architecture
+diagram. Use `assets/security_boundary_diagram.svg` when explaining security and
+privacy. Use `assets/incident_knowledge_loop.svg` when explaining the optional
+custom sample workflow for unknown incidents.
 
 ```mermaid
 flowchart LR

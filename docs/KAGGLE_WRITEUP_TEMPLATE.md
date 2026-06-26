@@ -75,6 +75,7 @@ The app follows a safety-first flow:
 
 See `docs/ARCHITECTURE.md` and the static diagram assets:
 
+- `assets/how_to_use_app.svg`
 - `assets/safety_first_agent_flow.svg`
 - `assets/security_boundary_diagram.svg`
 - `assets/incident_knowledge_loop.svg`

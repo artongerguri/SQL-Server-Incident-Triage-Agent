@@ -25,10 +25,18 @@ claims and unsafe recommendations.
 
 ## 1:20 - Architecture
 
-Show `assets/safety_first_agent_flow.svg` or the architecture section in the
-README.
+Show `assets/how_to_use_app.svg` first, then `assets/safety_first_agent_flow.svg`
+or the architecture section in the README.
 
-Explain the flow:
+Explain the user workflow:
+
+- A real DBA copies an incident from SSMS, SQL Agent history, SQL Server Error
+  Log, monitoring, or application logs.
+- The user pastes that real text into Incident input.
+- Load sample incident is only for demo/testing, not for normal real usage.
+- The user clicks Analyze Incident and reviews the result.
+
+Then explain the agent architecture:
 
 - Streamlit receives the incident.
 - A privacy guard redacts sensitive values.
@@ -41,8 +49,10 @@ Explain the flow:
 
 Load `backup_failed_disk_full.txt`.
 
-Show that the agent detects Backup / Storage with Critical severity. Point out
-the likely cause, verification steps, and read-only SQL checks.
+Explain that this sample simulates what a DBA would normally paste from SQL
+Agent job history or an error log. Show that the agent detects Backup / Storage
+with Critical severity. Point out the likely cause, verification steps, and
+read-only SQL checks.
 
 ## 2:35 - Demo 2: TempDB or database integrity
 
