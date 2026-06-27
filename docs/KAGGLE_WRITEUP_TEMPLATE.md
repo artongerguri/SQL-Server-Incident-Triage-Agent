@@ -12,6 +12,11 @@ An ADK multi-agent assistant that turns SQL Server incident logs into a safe DBA
 
 Agents for Business
 
+## Submission links
+
+- Demo video: https://youtu.be/jOxafrSb3Cc
+- Public project link: https://github.com/artongerguri/SQL-Server-Incident-Triage-Agent
+
 ## Problem
 
 SQL Server incidents often arrive as long error logs, failed SQL Agent job
@@ -110,6 +115,8 @@ reviewed, converted into a deterministic `TriageRule`, and covered by tests
 before it becomes active.
 
 ## Demo scenario
+
+Video: https://youtu.be/jOxafrSb3Cc
 
 The repository includes 14 anonymized sample incidents covering backup/storage,
 transaction log pressure, replication, Query Store performance, deadlocks,

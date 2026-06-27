@@ -8,7 +8,9 @@
 **Competition / Course:** AI Agents: Intensive Vibe Coding Capstone Project  
 **Organizer:** Kaggle, in collaboration with Google  
 **Recommended Track:** Agents for Business  
-**Project Type:** AI-assisted SQL Server incident triage agent
+**Project Type:** AI-assisted SQL Server incident triage agent  
+**Demo Video:** [YouTube demo](https://youtu.be/jOxafrSb3Cc)  
+**Public Project Link:** [GitHub repository](https://github.com/artongerguri/SQL-Server-Incident-Triage-Agent)
 
 </div>
 
@@ -24,6 +26,12 @@ This project was developed as a capstone submission for the **Kaggle AI Agents:
 Intensive Vibe Coding Capstone Project**. It demonstrates a practical business
 use case for AI agents: reducing the time required to understand database
 incidents while keeping human DBA approval in the loop for operational actions.
+
+Submission artifacts:
+
+- **Kaggle track:** Agents for Business
+- **Demo video:** [https://youtu.be/jOxafrSb3Cc](https://youtu.be/jOxafrSb3Cc)
+- **Public project link:** [https://github.com/artongerguri/SQL-Server-Incident-Triage-Agent](https://github.com/artongerguri/SQL-Server-Incident-Triage-Agent)
 
 ## What It Does
 
@@ -264,7 +272,6 @@ sql-server-incident-triage-agent/
 |   `-- security_boundary_diagram.svg
 |-- docs/
 |   |-- ARCHITECTURE.md
-|   |-- DEMO_VIDEO_SCRIPT.md
 |   |-- KAGGLE_WRITEUP_TEMPLATE.md
 |   `-- SUBMISSION_CHECKLIST.md
 |-- prompts/
@@ -515,7 +522,7 @@ Show:
 Supporting submission materials:
 
 - Kaggle writeup draft: `docs/KAGGLE_WRITEUP_TEMPLATE.md`
-- demo video script: `docs/DEMO_VIDEO_SCRIPT.md`
+- YouTube demo video: [https://youtu.be/jOxafrSb3Cc](https://youtu.be/jOxafrSb3Cc)
 - submission checklist: `docs/SUBMISSION_CHECKLIST.md`
 - cover image: `assets/cover.svg`
 - architecture image: `assets/architecture.svg`
