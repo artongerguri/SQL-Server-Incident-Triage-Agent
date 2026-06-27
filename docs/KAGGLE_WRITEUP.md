@@ -14,6 +14,7 @@ Agents for Business
 
 ## Submission links
 
+- Live app: https://sql-server-incident-triage-agent.streamlit.app/
 - Demo video: https://youtu.be/jOxafrSb3Cc
 - Public project link: https://github.com/artongerguri/SQL-Server-Incident-Triage-Agent
 

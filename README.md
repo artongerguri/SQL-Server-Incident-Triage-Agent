@@ -9,6 +9,7 @@
 **Organizer:** Kaggle, in collaboration with Google  
 **Recommended Track:** Agents for Business  
 **Project Type:** AI-assisted SQL Server incident triage agent  
+**Live App:** [Streamlit demo](https://sql-server-incident-triage-agent.streamlit.app/)  
 **Demo Video:** [YouTube demo](https://youtu.be/jOxafrSb3Cc)  
 **Public Project Link:** [GitHub repository](https://github.com/artongerguri/SQL-Server-Incident-Triage-Agent)
 
@@ -30,6 +31,7 @@ incidents while keeping human DBA approval in the loop for operational actions.
 Submission artifacts:
 
 - **Kaggle track:** Agents for Business
+- **Live app:** [https://sql-server-incident-triage-agent.streamlit.app/](https://sql-server-incident-triage-agent.streamlit.app/)
 - **Demo video:** [https://youtu.be/jOxafrSb3Cc](https://youtu.be/jOxafrSb3Cc)
 - **Public project link:** [https://github.com/artongerguri/SQL-Server-Incident-Triage-Agent](https://github.com/artongerguri/SQL-Server-Incident-Triage-Agent)
 
@@ -448,8 +450,12 @@ For the Kaggle submission, test the deployed app with:
 3. `deadlock_detected.txt`
 
 Confirm that the deployed app can load a sample, analyze it, show privacy
-review, display safe SQL checks, and record DBA approval. If the deployed app is
-stable, add the Streamlit URL to the Kaggle Writeup as the live project link.
+review, display safe SQL checks, and record DBA approval. The deployed public
+demo is available at:
+
+```text
+https://sql-server-incident-triage-agent.streamlit.app/
+```
 
 ## Proposing New Rules For Unknown Incidents
 
