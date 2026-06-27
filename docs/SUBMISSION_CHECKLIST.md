@@ -20,7 +20,7 @@ repository and make sure it includes:
 - `.env.example` without real secrets
 - `requirements.txt`
 - sample incident files
-- custom sample workflow documented if shown in the video
+- rule proposal workflow documented if shown in the video
 - Agent Skill folder under `skills/`
 - visual diagrams under `assets/`
 - tests

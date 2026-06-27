@@ -15,9 +15,8 @@ from src.adk_workflow import is_adk_configured
 from src.agent import IncidentTriageAgent
 from src.memory import IncidentMemoryStore
 from src.report import render_markdown_report
+from src.rule_proposals import create_rule_proposal, is_actionable_adk_analysis
 from src.sample_library import (
-    create_custom_sample,
-    is_actionable_adk_analysis,
     list_sample_names,
     load_sample_text,
 )
@@ -37,6 +36,31 @@ PLACEHOLDER = (
 st.set_page_config(
     page_title="SQL Server Incident Triage Agent",
     layout="wide",
+    menu_items={},
+)
+
+st.markdown(
+    """
+    <style>
+    header,
+    header[data-testid="stHeader"],
+    [data-testid="stHeader"],
+    [data-testid="stAppToolbar"],
+    [data-testid="stDeployButton"],
+    [data-testid="stToolbar"],
+    [data-testid="stDecoration"],
+    [data-testid="stStatusWidget"],
+    #MainMenu {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+    }
+    .stApp {
+        margin-top: 0 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
 
 
@@ -98,7 +122,7 @@ with st.sidebar:
         key="selected_sample",
         on_change=load_selected_sample,
     )
-    saved_message = st.session_state.pop("custom_sample_saved_message", None)
+    saved_message = st.session_state.pop("rule_proposal_saved_message", None)
     if saved_message:
         st.success(saved_message)
 
@@ -126,8 +150,8 @@ with action_col:
 with info_col:
     st.info(
         "The local engine always runs first. External AI and memory require "
-    "separate opt-in controls."
-)
+        "separate opt-in controls."
+    )
 
 # Analysis is triggered by a button instead of running on every keystroke. This
 # keeps ADK/API calls user-controlled and avoids repeated work during editing.
@@ -179,43 +203,43 @@ if result:
     st.markdown(render_markdown_report(result))
 
     if not result.get("matched_rules"):
-        st.subheader("Learn from this incident")
-        # Unknown incidents can become reusable demos only after external AI
-        # guidance exists and the user approves saving the redacted sample.
+        st.subheader("Propose a new rule")
+        # Unknown incidents can become proposed deterministic rules only after
+        # external AI guidance exists and the user approves local draft storage.
         st.caption(
             "No local rule matched this incident. If ADK/Gemini produced useful "
-            "guidance and a DBA reviewed it, you can save a redacted sample for "
-            "future local demos. This does not create a new automatic rule."
+            "guidance and a DBA reviewed it, you can save a local proposed rule "
+            "for later developer review. This does not activate the rule."
         )
         adk_analysis = result.get("adk_analysis")
-        can_save_custom_sample = is_actionable_adk_analysis(adk_analysis)
+        can_save_rule_proposal = is_actionable_adk_analysis(adk_analysis)
         if not is_adk_configured():
             st.info(
                 "Configure GOOGLE_API_KEY and approve external AI sharing if you "
                 "want ADK help for unknown incidents. Without an API key, the app "
                 "continues with local rules and existing samples."
             )
-        elif not can_save_custom_sample:
+        elif not can_save_rule_proposal:
             st.info(
                 "Run this incident with ADK enabled and external AI sharing "
                 "approved. After you verify the ADK guidance, this panel can save "
-                "a redacted reusable sample."
+                "a proposed deterministic rule for manual review."
             )
         else:
             severity_options = ["Critical", "High", "Medium", "Low", "Unknown"]
             current_severity = result.get("severity", "Unknown")
             # Preserve the current local severity when possible, but allow the
-            # operator to correct it before saving a custom sample.
+            # operator to correct it before saving a rule proposal.
             severity_index = (
                 severity_options.index(current_severity)
                 if current_severity in severity_options
                 else len(severity_options) - 1
             )
-            with st.form(f"save_custom_sample_{result.get('incident_fingerprint')}"):
-                filename_hint = st.text_input(
-                    "Local sample filename",
-                    value=f"custom_{result.get('incident_fingerprint', 'incident')}",
-                    help="Saved under sample_incidents/custom/ and ignored by git.",
+            with st.form(f"save_rule_proposal_{result.get('incident_fingerprint')}"):
+                proposed_name = st.text_input(
+                    "Proposed rule name",
+                    value=f"Proposed rule {result.get('incident_fingerprint', 'incident')}",
+                    help="Saved as a local JSON proposal under data/rule_proposals/.",
                 )
                 confirmed_category = st.text_input(
                     "Confirmed category",
@@ -227,36 +251,44 @@ if result:
                     severity_options,
                     index=severity_index,
                 )
+                candidate_keywords = st.text_area(
+                    "Candidate keywords",
+                    value="",
+                    height=90,
+                    help="Comma- or newline-separated keywords that should trigger this rule.",
+                )
                 operator_notes = st.text_area(
-                    "Verified notes / ADK analysis to save",
+                    "Verified notes / ADK analysis",
                     value=adk_analysis,
                     height=180,
                 )
                 approve_save = st.checkbox(
-                    "I approve saving only the redacted incident and notes locally."
+                    "I approve saving a local proposed rule for manual review."
                 )
-                submitted = st.form_submit_button("Save redacted custom sample")
+                submitted = st.form_submit_button("Save proposed rule")
                 if submitted:
                     if not approve_save:
-                        st.warning("Approve local storage before saving the sample.")
+                        st.warning(
+                            "Approve local storage before saving the proposed rule."
+                        )
                     else:
-                        # Custom sample creation stores only redacted content and
-                        # reviewed notes. It does not create a deterministic rule.
-                        saved_name = create_custom_sample(
-                            sample_dir=SAMPLE_DIR,
+                        # Rule proposals store reviewed draft metadata. They do
+                        # not edit or activate src/rules.py automatically.
+                        saved_name = create_rule_proposal(
                             redacted_incident=result.get("privacy", {}).get(
                                 "redacted_text", ""
                             ),
+                            proposed_name=proposed_name,
                             confirmed_category=confirmed_category,
                             confirmed_severity=confirmed_severity,
-                            filename_hint=filename_hint,
+                            candidate_keywords=candidate_keywords,
                             operator_notes=operator_notes,
                             source_fingerprint=result.get(
                                 "incident_fingerprint", ""
                             ),
                         )
-                        st.session_state["custom_sample_saved_message"] = (
-                            f"Saved custom sample: {saved_name}"
+                        st.session_state["rule_proposal_saved_message"] = (
+                            f"Saved proposed rule for review: {saved_name}"
                         )
                         st.rerun()
 

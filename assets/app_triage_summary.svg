@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Application triage summary screen</title>
+  <desc id="desc">Streamlit application after analyzing a TempDB incident, showing severity, category, matched rules, and privacy review.</desc>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <style>
+      .ui { font-family: Segoe UI, Arial, sans-serif; }
+      .title { font-size: 42px; font-weight: 800; fill: #1f2937; }
+      .subtitle { font-size: 15px; fill: #8b95a1; }
+      .heading { font-size: 28px; font-weight: 800; fill: #111827; }
+      .side-heading { font-size: 19px; font-weight: 800; fill: #111827; }
+      .label { font-size: 14px; fill: #111827; }
+      .muted { font-size: 14px; fill: #6b7280; }
+      .big { font-size: 36px; fill: #1f2937; }
+      .button { font-size: 14px; font-weight: 700; fill: #ffffff; }
+      .notice { font-size: 17px; fill: #0b579f; }
+      .green { font-size: 16px; fill: #15803d; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#ffffff"/>
+  <rect x="0" y="0" width="290" height="900" fill="#eef2f7"/>
+
+  <g class="ui">
+    <text class="side-heading" x="14" y="96">Controls</text>
+    <rect x="14" y="126" width="32" height="17" rx="8.5" fill="#d1d5db"/>
+    <circle cx="22" cy="134.5" r="7" fill="#ffffff"/>
+    <text class="label" x="56" y="140">Use Google ADK workflow</text>
+    <rect x="14" y="156" width="260" height="80" rx="8" fill="#dbeafe"/>
+    <text class="notice" x="30" y="188">No GOOGLE_API_KEY: local triage</text>
+    <text class="notice" x="30" y="214">remains available.</text>
+    <rect x="14" y="257" width="15" height="15" rx="3" fill="#ffffff" stroke="#cbd5e1"/>
+    <text class="muted" x="40" y="270">Approve sharing redacted text with</text>
+    <text class="muted" x="40" y="292">Gemini</text>
+    <rect x="14" y="315" width="32" height="17" rx="8.5" fill="#d1d5db"/>
+    <circle cx="22" cy="323.5" r="7" fill="#ffffff"/>
+    <text class="label" x="56" y="326">Store redacted incident in local</text>
+    <text class="label" x="56" y="348">memory</text>
+    <line x1="14" y1="400" x2="274" y2="400" stroke="#cbd5e1"/>
+    <text class="side-heading" x="14" y="470">Sample incidents</text>
+    <text class="label" x="14" y="508">Load sample incident</text>
+    <rect x="14" y="524" width="260" height="42" rx="8" fill="#ffffff"/>
+    <text class="label" x="30" y="550">tempdb_space_pressure.txt</text>
+    <path d="M250 541 L258 549 L266 541" fill="none" stroke="#111827" stroke-width="2"/>
+
+    <text class="title" x="370" y="50">SQL Server Incident Triage Agent</text>
+    <text class="subtitle" x="372" y="92">ADK multi-agent triage with read-only MCP tools and local fallback</text>
+    <text class="label" x="372" y="130">Incident input</text>
+    <rect x="372" y="144" width="1175" height="250" rx="8" fill="#f0f2f6"/>
+    <text class="label" x="386" y="172">Incident:</text>
+    <text class="label" x="386" y="212">SQL Server reported error 1105:</text>
+    <text class="label" x="386" y="236">Could not allocate space for object in database 'tempdb' because the filegroup</text>
+    <text class="label" x="386" y="260">is full.</text>
+    <text class="label" x="386" y="304">Symptoms:</text>
+    <text class="label" x="386" y="328">- tempdb is full</text>
+    <text class="label" x="386" y="352">- version store is growing</text>
+    <text class="label" x="386" y="376">- users report timeouts during month-end reporting</text>
+
+    <rect x="372" y="412" width="124" height="42" rx="8" fill="#ff4b5c" filter="url(#shadow)"/>
+    <text class="button" x="386" y="439">Analyze Incident</text>
+    <rect x="750" y="412" width="795" height="58" rx="8" fill="#e8f2ff"/>
+    <text class="notice" x="770" y="448">The local engine always runs first. External AI and memory require separate opt-in controls.</text>
+
+    <text class="heading" x="372" y="522">Triage Summary</text>
+    <text class="label" x="372" y="562">Severity</text>
+    <text class="big" x="372" y="606">Critical</text>
+    <text class="label" x="865" y="562">Category</text>
+    <text class="big" x="865" y="606">TempDB</text>
+    <text class="label" x="1360" y="562">Matched rules</text>
+    <text class="big" x="1360" y="606">1</text>
+
+    <rect x="372" y="638" width="1175" height="205" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <rect x="372" y="638" width="1175" height="39" rx="8" fill="#f8fafc" stroke="#d1d5db"/>
+    <path d="M395 654 L402 662 L409 654" fill="none" stroke="#111827" stroke-width="2"/>
+    <text class="label" x="425" y="663">Privacy review</text>
+    <rect x="388" y="696" width="1142" height="58" rx="8" fill="#ecfdf3"/>
+    <text class="green" x="406" y="732">No configured sensitive patterns were detected.</text>
+    <text class="muted" x="388" y="786">Redacted preview</text>
+    <rect x="388" y="802" width="1142" height="28" rx="4" fill="#f3f4f6"/>
+  </g>
+</svg>

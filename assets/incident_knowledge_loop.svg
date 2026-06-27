@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000" role="img" aria-labelledby="title desc">
   <title id="title">Incident Knowledge Loop</title>
-  <desc id="desc">Loop showing how unknown incidents can become redacted local samples after ADK guidance and human approval.</desc>
+  <desc id="desc">Loop showing how unknown incidents can become proposed deterministic rules after ADK guidance and human approval.</desc>
   <defs>
     <marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
       <path d="M2,2 L12,7 L2,12 Z" fill="#334155"/>
@@ -47,9 +47,9 @@
   <text class="small" x="1420" y="540">severity, and notes</text>
 
   <rect class="box" x="1010" y="720" width="320" height="150" rx="22" fill="#fef3c7" stroke="#f59e0b" stroke-width="3"/>
-  <text class="label" x="1055" y="770">Custom Sample</text>
-  <text class="small" x="1055" y="807">Saved under custom/</text>
-  <text class="small" x="1055" y="835">and ignored by git</text>
+  <text class="label" x="1055" y="770">Rule Proposal</text>
+  <text class="small" x="1055" y="807">Saved under data/</text>
+  <text class="small" x="1055" y="835">for manual review</text>
 
   <rect class="box" x="540" y="720" width="320" height="150" rx="22" fill="#dbeafe" stroke="#3b82f6" stroke-width="3"/>
   <text class="label" x="595" y="770">Future Local Demo</text>
@@ -63,10 +63,10 @@
   <path class="line" d="M1010 795 H860"/>
   <path class="line" d="M540 795 C420 705, 350 620, 430 535"/>
 
-  <text x="745" y="512" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800" fill="#0f172a">No automatic rule creation</text>
-  <text x="745" y="548" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="19" fill="#475569">A saved sample is evidence for later manual review.</text>
+  <text x="745" y="512" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800" fill="#0f172a">No automatic activation</text>
+  <text x="745" y="548" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="19" fill="#475569">A saved proposal is evidence for later review.</text>
   <text x="745" y="578" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="19" fill="#475569">Published rules still require code and tests.</text>
 
   <rect x="80" y="915" width="1640" height="50" rx="16" fill="#0f172a"/>
-  <text x="120" y="948" font-family="Segoe UI, Arial, sans-serif" font-size="20" fill="#cbd5e1">This loop shows controlled learning: the agent can help with unknown incidents, but a human approves what becomes reusable local knowledge.</text>
+  <text x="120" y="948" font-family="Segoe UI, Arial, sans-serif" font-size="20" fill="#cbd5e1">This loop shows controlled learning: the agent can draft a rule proposal, but humans review and test rules before activation.</text>
 </svg>

@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="920" viewBox="0 0 1600 920" role="img" aria-labelledby="title desc">
+  <title id="title">Application triage report screen</title>
+  <desc id="desc">Detailed triage report showing likely cause, verification steps, recommended actions, safe SQL checks, and matched rules.</desc>
+  <style>
+    .ui { font-family: Segoe UI, Arial, sans-serif; }
+    .heading { font-size: 30px; font-weight: 800; fill: #111827; }
+    .side-heading { font-size: 19px; font-weight: 800; fill: #111827; }
+    .body { font-size: 16px; fill: #111827; }
+    .muted { font-size: 14px; fill: #6b7280; }
+    .code { font-family: Consolas, Monaco, monospace; font-size: 15px; fill: #111827; }
+    .kw { font-family: Consolas, Monaco, monospace; font-size: 15px; fill: #2563eb; }
+    .notice { font-size: 17px; fill: #0b579f; }
+  </style>
+
+  <rect width="1600" height="920" fill="#ffffff"/>
+  <rect x="0" y="0" width="290" height="920" fill="#eef2f7"/>
+
+  <g class="ui">
+    <text class="side-heading" x="14" y="96">Controls</text>
+    <rect x="14" y="126" width="32" height="17" rx="8.5" fill="#d1d5db"/>
+    <circle cx="22" cy="134.5" r="7" fill="#ffffff"/>
+    <text class="body" x="56" y="140">Use Google ADK workflow</text>
+    <rect x="14" y="156" width="260" height="80" rx="8" fill="#dbeafe"/>
+    <text class="notice" x="30" y="188">No GOOGLE_API_KEY: local triage</text>
+    <text class="notice" x="30" y="214">remains available.</text>
+    <line x1="14" y1="398" x2="274" y2="398" stroke="#cbd5e1"/>
+    <text class="side-heading" x="14" y="468">Sample incidents</text>
+    <text class="body" x="14" y="506">Load sample incident</text>
+    <rect x="14" y="522" width="260" height="42" rx="8" fill="#ffffff"/>
+    <text class="body" x="30" y="548">tempdb_space_pressure.txt</text>
+    <path d="M250 539 L258 547 L266 539" fill="none" stroke="#111827" stroke-width="2"/>
+
+    <text class="heading" x="372" y="48">Likely cause</text>
+    <text class="body" x="372" y="90">TempDB is under space pressure because of user objects, internal objects, version store growth, or insufficient file capacity.</text>
+
+    <text class="heading" x="372" y="148">Verification steps</text>
+    <circle cx="382" cy="190" r="3" fill="#111827"/>
+    <text class="body" x="402" y="196">Check TempDB data and log file size, growth settings, and available volume space.</text>
+    <circle cx="382" cy="226" r="3" fill="#111827"/>
+    <text class="body" x="402" y="232">Identify sessions consuming TempDB user or internal object pages.</text>
+    <circle cx="382" cy="262" r="3" fill="#111827"/>
+    <text class="body" x="402" y="268">Check version store usage if snapshot isolation, online index work, or long transactions are active.</text>
+    <circle cx="382" cy="298" r="3" fill="#111827"/>
+    <text class="body" x="402" y="304">Review recent jobs, large sorts, hash joins, reporting queries, and ETL workloads.</text>
+
+    <text class="heading" x="372" y="370">Recommended actions</text>
+    <circle cx="382" cy="412" r="3" fill="#111827"/>
+    <text class="body" x="402" y="418">Do not restart SQL Server before understanding whether a workload is still consuming TempDB.</text>
+    <circle cx="382" cy="448" r="3" fill="#111827"/>
+    <text class="body" x="402" y="454">Add TempDB space only after confirming the underlying pressure and storage capacity.</text>
+    <circle cx="382" cy="484" r="3" fill="#111827"/>
+    <text class="body" x="402" y="490">Tune or stop the workload consuming excessive TempDB after DBA approval.</text>
+    <circle cx="382" cy="520" r="3" fill="#111827"/>
+    <text class="body" x="402" y="526">Review TempDB sizing, file count, and growth settings after the incident.</text>
+
+    <text class="heading" x="372" y="594">Safe SQL checks</text>
+    <rect x="372" y="624" width="1085" height="52" rx="8" fill="#f8fafc"/>
+    <text class="kw" x="392" y="657">SELECT</text>
+    <text class="code" x="452" y="657">name, size, max_size, growth</text>
+    <text class="kw" x="720" y="657">FROM</text>
+    <text class="code" x="770" y="657">tempdb.sys.database_files;</text>
+
+    <rect x="372" y="694" width="1085" height="52" rx="8" fill="#f8fafc"/>
+    <text class="kw" x="392" y="727">SELECT</text>
+    <text class="code" x="452" y="727">session_id, user_objects_alloc_page_count, internal_objects_alloc_page_count</text>
+    <text class="kw" x="1020" y="727">FROM</text>
+    <text class="code" x="1070" y="727">sys.dm_db_session_space_usage;</text>
+
+    <rect x="372" y="764" width="1085" height="52" rx="8" fill="#f8fafc"/>
+    <text class="kw" x="392" y="797">SELECT</text>
+    <text class="code" x="452" y="797">session_id, user_objects_alloc_page_count, internal_objects_alloc_page_count</text>
+    <text class="kw" x="1020" y="797">FROM</text>
+    <text class="code" x="1070" y="797">sys.dm_db_task_space_usage;</text>
+
+    <text class="heading" x="372" y="872">Matched rules</text>
+    <circle cx="382" cy="906" r="3" fill="#111827"/>
+    <text class="body" x="402" y="912">TempDB space pressure | keywords: tempdb, could not allocate space, error 1105, version store, tempdb is full</text>
+  </g>
+</svg>

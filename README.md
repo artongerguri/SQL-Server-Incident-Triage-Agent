@@ -97,8 +97,8 @@ This agent is designed to help with the first triage phase:
   structure, and SQL allowlist behavior.
 - **Expanded scenario library**: 14 anonymized SQL Server incident samples for
   demos, testing, and Kaggle submission evidence.
-- **User-approved custom samples**: unknown incidents can be saved locally as
-  redacted reusable samples after ADK guidance and DBA/operator review.
+- **User-approved rule proposals**: unknown incidents can be saved locally as
+  redacted proposed rules after ADK guidance and DBA/operator review.
 - **Agent Skill runbook**: `skills/sql-server-incident-triage/SKILL.md`
   captures the reusable SQL Server triage procedure from the course's Agent
   Skills concept.
@@ -112,10 +112,51 @@ Static architecture assets for the README, Kaggle writeup, and video:
 - `assets/security_boundary_diagram.svg`
 - `assets/incident_knowledge_loop.svg`
 - `assets/how_to_use_app.svg`
+- `assets/app_input_screen.svg`
+- `assets/app_triage_summary.svg`
+- `assets/app_triage_report.svg`
+- `assets/app_human_approval.svg`
 
 ### How to Use the Application
 
 ![How to Use the Application](assets/how_to_use_app.svg)
+
+### Application Walkthrough
+
+These application views show the main user journey documented for the Kaggle
+writeup and demo video.
+
+#### 1. Incident Input And Controls
+
+The user can paste a real SQL Server incident from SSMS, SQL Agent history,
+SQL Server Error Log, monitoring, or application logs. Sample incidents are
+available for demos and testing. External AI and local memory remain separate
+opt-in controls.
+
+![Application input screen](assets/app_input_screen.svg)
+
+#### 2. Triage Summary And Privacy Review
+
+After analysis, the app presents severity, category, matched rules, and the
+privacy review. This makes it clear what was detected locally before any
+optional ADK/Gemini workflow is used.
+
+![Application triage summary](assets/app_triage_summary.svg)
+
+#### 3. Root Cause, Verification, And Safe SQL Checks
+
+The report explains the likely cause, verification steps, recommended actions,
+and read-only SQL checks. The checks are suggestions for DBA review; the app
+does not execute SQL commands.
+
+![Application triage report](assets/app_triage_report.svg)
+
+#### 4. Human Approval And Raw Result
+
+The final section records which SQL checks a DBA reviewed and exposes the raw
+structured result for transparency, testing, and debugging.
+
+![Application human approval](assets/app_human_approval.svg)
 
 ### Safety-First Agent Flow
 
@@ -178,8 +219,8 @@ flowchart LR
 
 Code comments are intentionally focused on design and behavior decisions rather
 than restating obvious Python syntax. The main commented areas are ADK tool
-filtering, MCP read-only boundaries, privacy redaction, unknown-incident sample
-creation, and SQL diagnostic allowlisting.
+filtering, MCP read-only boundaries, privacy redaction, unknown-incident rule
+proposal storage, and SQL diagnostic allowlisting.
 
 ## Tech Stack
 
@@ -208,8 +249,14 @@ creation, and SQL diagnostic allowlisting.
 ```text
 sql-server-incident-triage-agent/
 |-- app.py
+|-- .streamlit/
+|   `-- config.toml
 |-- assets/
 |   |-- architecture.svg
+|   |-- app_human_approval.svg
+|   |-- app_input_screen.svg
+|   |-- app_triage_report.svg
+|   |-- app_triage_summary.svg
 |   |-- cover.svg
 |   |-- how_to_use_app.svg
 |   |-- incident_knowledge_loop.svg
@@ -242,6 +289,7 @@ sql-server-incident-triage-agent/
 |   |-- mcp_server.py
 |   |-- memory.py
 |   |-- report.py
+|   |-- rule_proposals.py
 |   |-- rules.py
 |   |-- security.py
 |   `-- sqlserver_tools.py
@@ -347,28 +395,45 @@ Typical workflow:
 10. If needed, manually run reviewed SQL checks in SSMS or another trusted DBA
     tool. This app does not execute them.
 
-## Learning From Unknown Incidents
+## Proposing New Rules For Unknown Incidents
 
 If no local rule matches an incident, the app can optionally use the ADK/Gemini
 workflow when `GOOGLE_API_KEY` is configured and the user approves sharing the
 redacted incident text.
 
-After a DBA or operator verifies that the ADK guidance is useful, the UI can save
-a new redacted sample under:
+In the UI, this appears as a **Propose a new rule** panel after analysis. The
+panel is shown only when:
+
+1. the local rule engine matched zero rules
+2. ADK/Gemini produced actionable guidance
+3. the user reviewed the redacted incident and ADK notes
+4. the user explicitly approves saving the proposal
+
+The form asks for:
+
+- proposed rule name
+- confirmed category
+- confirmed severity
+- candidate trigger keywords
+- reviewed notes / ADK analysis
+- approval checkbox
+
+After approval, the proposal is saved as local JSON under:
 
 ```text
-sample_incidents/custom/
+data/rule_proposals/
 ```
 
 This is intentionally approval-based:
 
 - the app never sends incident text to external AI without opt-in
-- the app saves only the redacted incident and reviewed notes
-- custom samples are ignored by git through `.gitignore`
-- saving a sample does not automatically create a new rule in `src/rules.py`
+- the app saves only redacted incident text, reviewed notes, candidate keywords,
+  category, and severity
+- rule proposals are ignored by git through `.gitignore`
+- saving a proposal does not modify or activate `src/rules.py`
 
-If the sample becomes generally useful, review it manually and add a proper
-deterministic rule and test before publishing it.
+If the proposal becomes generally useful, review it manually, add a proper
+`TriageRule` to `src/rules.py`, and add/update tests before publishing it.
 
 ## Run The MCP Server
 

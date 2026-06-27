@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="720" viewBox="0 0 1600 720" role="img" aria-labelledby="title desc">
+  <title id="title">Application human approval screen</title>
+  <desc id="desc">Final application screen showing matched rules, ADK analysis status, safety reminder, human approval controls, and raw JSON result.</desc>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <style>
+      .ui { font-family: Segoe UI, Arial, sans-serif; }
+      .heading { font-size: 30px; font-weight: 800; fill: #111827; }
+      .body { font-size: 16px; fill: #111827; }
+      .muted { font-size: 14px; fill: #8b95a1; }
+      .button { font-size: 14px; fill: #111827; }
+      .code { font-family: Consolas, Monaco, monospace; font-size: 15px; fill: #ef4444; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="720" fill="#ffffff"/>
+
+  <g class="ui">
+    <text class="heading" x="46" y="58">Matched rules</text>
+    <circle cx="56" cy="96" r="3" fill="#111827"/>
+    <text class="body" x="76" y="102">TempDB space pressure | keywords: tempdb, could not allocate space, error 1105, version store, tempdb is full</text>
+
+    <text class="heading" x="46" y="164">ADK multi-agent analysis</text>
+    <text class="body" x="46" y="206">ADK analysis was not requested or not configured.</text>
+
+    <text class="heading" x="46" y="268">Safety reminder</text>
+    <text class="body" x="46" y="310">This tool does not execute SQL commands. Review every query before running it in any real environment.</text>
+
+    <text class="heading" x="46" y="374">Human approval</text>
+    <text class="muted" x="46" y="414">Approval only records which read-only checks a DBA reviewed. This application does not execute them.</text>
+    <text class="body" x="46" y="460">Reviewed and approved SQL checks</text>
+    <rect x="46" y="476" width="1460" height="44" rx="8" fill="#f0f2f6"/>
+    <text class="muted" x="64" y="504">Choose options</text>
+    <path d="M1476 492 L1484 500 L1492 492" fill="none" stroke="#111827" stroke-width="2"/>
+
+    <rect x="46" y="540" width="160" height="40" rx="8" fill="#ffffff" stroke="#d1d5db" filter="url(#shadow)"/>
+    <text class="button" x="64" y="565">Record DBA approval</text>
+
+    <rect x="46" y="598" width="1460" height="40" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <path d="M70 610 L78 618 L70 626" fill="none" stroke="#111827" stroke-width="2"/>
+    <text class="body" x="94" y="623">Raw JSON result</text>
+
+    <rect x="46" y="660" width="1460" height="48" rx="8" fill="#fff7ed" stroke="#fed7aa"/>
+    <text class="code" x="64" y="690">{ "severity": "Critical", "category": "TempDB", "adk_enabled": false, "matched_rules": 1 }</text>
+  </g>
+</svg>

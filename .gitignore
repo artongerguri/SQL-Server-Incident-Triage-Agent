@@ -3,10 +3,10 @@ __pycache__/
 *.pyc
 .env
 .pytest_cache/
-.streamlit/
+.streamlit/secrets.toml
 .DS_Store
 data/*.db
 data/*.db-shm
 data/*.db-wal
+data/rule_proposals/*.json
 .test-tmp/
-sample_incidents/custom/*.txt

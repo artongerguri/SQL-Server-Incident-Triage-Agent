@@ -1,0 +1,5 @@
+[client]
+# Hide Streamlit developer toolbar options such as Deploy, rerun, and clear cache
+# from the local demo UI. Deployment is handled from GitHub/Streamlit Cloud or
+# from the command line, not by an end-user button inside the app.
+toolbarMode = "viewer"

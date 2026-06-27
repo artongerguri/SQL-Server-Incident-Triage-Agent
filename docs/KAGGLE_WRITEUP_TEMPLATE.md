@@ -103,6 +103,12 @@ The project avoids common risks for database assistants:
 - Live SQL diagnostics are disabled by default and use named static queries only.
 - The UI records human DBA approval separately from analysis.
 
+For unknown incidents, the app can create a local rule proposal after ADK
+guidance and human approval. This is deliberately not automatic rule creation:
+the proposal is saved as JSON under `data/rule_proposals/` and must be manually
+reviewed, converted into a deterministic `TriageRule`, and covered by tests
+before it becomes active.
+
 ## Demo scenario
 
 The repository includes 14 anonymized sample incidents covering backup/storage,
@@ -145,15 +151,15 @@ reviewable through code, tests, diagrams, and documentation.
 The implementation also includes broad targeted comments and docstrings across
 the app, source modules, and tests. The most important comments document
 safety-critical code paths: ADK tool filtering, MCP read-only behavior, privacy
-redaction, local memory, SQL allowlisting, and user-approved creation of custom
-samples. The comments explain design and behavior decisions rather than
+redaction, local memory, SQL allowlisting, and user-approved rule proposal
+storage. The comments explain design and behavior decisions rather than
 repeating simple syntax.
 
 ## Limitations and future work
 
 - Add richer evidence ingestion from SQL Server error logs, Windows event logs,
   and monitoring systems.
-- Convert high-value custom samples into reviewed deterministic rules.
+- Convert high-value rule proposals into reviewed deterministic rules.
 - Add optional Markdown/PDF export after the triage result is finalized.
 - Test live SQL diagnostics against a dedicated non-production SQL Server login.
 - Add deployment instructions for Streamlit Community Cloud or Cloud Run if a

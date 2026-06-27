@@ -16,7 +16,7 @@ Use `assets/how_to_use_app.svg` to explain the real user workflow. Use
 `assets/safety_first_agent_flow.svg` as the main high-level architecture
 diagram. Use `assets/security_boundary_diagram.svg` when explaining security and
 privacy. Use `assets/incident_knowledge_loop.svg` when explaining the optional
-custom sample workflow for unknown incidents.
+rule proposal workflow for unknown incidents.
 
 ```mermaid
 flowchart LR
@@ -50,11 +50,11 @@ flowchart LR
   from application code.
 - Live SQL diagnostics are disabled by default and require explicit environment
   configuration plus least-privilege database permissions.
-- Unknown incidents can be saved as custom local samples only after redaction,
+- Unknown incidents can be saved as local rule proposals only after redaction,
   ADK/operator review, and explicit user approval.
 - Code comments document the design intent in safety-sensitive paths: ADK tool
   filtering, MCP read-only boundaries, privacy redaction, SQL allowlisting,
-  local memory, and custom sample creation.
+  local memory, and rule proposal storage.
 
 ## Data flow
 
@@ -72,4 +72,16 @@ flowchart LR
    and unsafe operational actions.
 8. The coordinator returns one concise DBA-facing response.
 9. If no local rule matched and the operator approves the reviewed guidance, the
-   app can save a redacted custom sample under `sample_incidents/custom/`.
+   app can save a redacted proposed rule under `data/rule_proposals/`.
+
+## Rule proposal workflow
+
+The rule proposal workflow is intentionally separate from the active rule
+engine. When `matched_rules` is empty, the UI can show **Propose a new rule**.
+If ADK/Gemini guidance is available and the operator approves local storage, the
+app saves a JSON proposal containing the redacted incident, proposed name,
+category, severity, candidate keywords, reviewed notes, and review checklist.
+
+The proposal does not modify `src/rules.py` and does not become active until a
+developer/DBA manually reviews it, converts it into a `TriageRule`, and adds or
+updates tests.

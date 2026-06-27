@@ -162,11 +162,15 @@ Say:
 
 The project also includes a controlled learning loop for unknown incidents. If
 no local rule matches, and ADK guidance is available, the user can save a
-redacted custom sample only after human review and approval.
+redacted proposed rule only after human review and approval.
 
-This does not automatically create a new rule. It creates reusable local
-evidence that can later be reviewed and converted into a deterministic rule with
-tests.
+This does not automatically activate the rule or modify the source code. It
+creates a local JSON proposal that can later be reviewed, converted into a
+deterministic `TriageRule`, and covered with tests.
+
+In the UI, this appears as a Propose a new rule panel. The user must confirm the
+name, category, severity, candidate keywords, notes, and approval checkbox before
+the proposal is saved.
 
 ## 4:50 - 5:00 | Conclusion
 

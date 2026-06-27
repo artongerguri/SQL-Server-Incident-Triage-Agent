@@ -540,7 +540,7 @@ def build_local_analysis(text: str) -> dict:
 
     if not matched:
         # Unknown incidents still produce a safe response. This avoids a blank UI
-        # and gives the operator a path for manual review or custom sample saving.
+        # and gives the operator a path for manual review or rule proposal saving.
         return {
             "category": "General SQL Server Incident",
             "severity": "Unknown",
