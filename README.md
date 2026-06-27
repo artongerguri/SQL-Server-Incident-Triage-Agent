@@ -125,6 +125,10 @@ Static architecture assets for the README, Kaggle writeup, and video:
 - `assets/app_triage_report.svg`
 - `assets/app_human_approval.svg`
 
+Kaggle-compatible PNG exports are available in `assets/` with the same base
+names. Use `assets/cover_kaggle_card.png` for the Writeup card/thumbnail and
+upload the other PNG files to the Kaggle Media Gallery as supporting images.
+
 ### How to Use the Application
 
 ![How to Use the Application](assets/how_to_use_app.svg)
@@ -334,6 +338,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+Live SQL Server diagnostics are disabled by default and are not required for
+the Streamlit demo. If you enable live diagnostics in a controlled
+non-production environment, install ODBC support separately:
+
+```bash
+pip install "pyodbc>=5.1,<6"
+```
+
 ### 3. Optional: configure ADK / Gemini
 
 Copy `.env.example` to `.env`.
@@ -401,6 +413,43 @@ Typical workflow:
 9. Record DBA approval for reviewed SQL checks.
 10. If needed, manually run reviewed SQL checks in SSMS or another trusted DBA
     tool. This app does not execute them.
+
+## Deploy To Streamlit Community Cloud
+
+The app is ready for Streamlit Community Cloud deployment from GitHub.
+
+Use these settings when creating the Streamlit app:
+
+```text
+Repository: https://github.com/artongerguri/SQL-Server-Incident-Triage-Agent
+Branch: main
+Main file path: app.py
+```
+
+No secrets are required for the public demo. Without `GOOGLE_API_KEY`, the app
+still runs the local deterministic triage engine and sample incidents.
+
+If you want to enable optional ADK/Gemini analysis in Streamlit Cloud, add these
+values in the app's **Settings > Secrets** panel, not in Git:
+
+```toml
+GOOGLE_API_KEY = "your_key_here"
+GEMINI_MODEL = "gemini-2.5-flash"
+INCIDENT_MEMORY_PATH = "data/incidents.db"
+SQLSERVER_MCP_ENABLE_LIVE = "false"
+SQLSERVER_CONNECTION_STRING = ""
+SQLSERVER_QUERY_TIMEOUT_SECONDS = "10"
+```
+
+For the Kaggle submission, test the deployed app with:
+
+1. `backup_failed_disk_full.txt`
+2. `tempdb_space_pressure.txt`
+3. `deadlock_detected.txt`
+
+Confirm that the deployed app can load a sample, analyze it, show privacy
+review, display safe SQL checks, and record DBA approval. If the deployed app is
+stable, add the Streamlit URL to the Kaggle Writeup as the live project link.
 
 ## Proposing New Rules For Unknown Incidents
 
